@@ -1,13 +1,12 @@
 "use client";
-import LayoutTwo from "@/components/ltr/layout/layout-two";
 import RelatedArticles from "@/components/ltr/related-articles/related-articles";
 import useRemoveBodyClass from "@/components/ltr/useEffect-hook/useEffect-hook";
 import Link from "next/link";
 import StickyBox from "react-sticky-box";
-
 import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { GET_LATEST_NEWS } from "../../../../../queries/getLatestNews";
+import Layout from "@/components/ltr/layout/layout";
 
 const page = () => {
   const { slug } = useParams();
@@ -33,7 +32,7 @@ const page = () => {
   if (!post) return <p>Post not found</p>;
 
   return (
-    <LayoutTwo>
+    <Layout>
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
         {/* START PAGE TITLE */}
@@ -806,7 +805,7 @@ const page = () => {
         </div>
       </main>
       {/* *** END OF /. PAGE MAIN CONTENT *** */}
-    </LayoutTwo>
+    </Layout>
   );
 };
 

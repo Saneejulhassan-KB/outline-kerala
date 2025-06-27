@@ -39,10 +39,15 @@ const HomeCenterSlider = ({ newsList = [] }) => {
                 src={`https://backend.outlinekerala.com/media/${news.image}`}
                 alt={news.title}
                 className="img-fluid"
+                style={{
+                  width: "100%",
+                  height: "400px", 
+                  objectFit: "cover", 
+                }}
               />
             </a>
             <div className="post-text">
-              <span className="post-category">{news.categoryName}</span>
+              <span className="post-category">{news.subcategoryName || news.categoryName}</span>
               <h2>
                 <a href={`/news/${news.slug}`}>{news.title}</a>
               </h2>

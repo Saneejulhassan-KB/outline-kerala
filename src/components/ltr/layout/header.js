@@ -6,7 +6,7 @@ import { WiDayLightning } from "weather-icons-react";
 import ThemeChanger from "../style-selectors/style-selector";
 
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORIES } from "../../../../queries/categories";
+import { GET_CATEGORIES_WITH_NEWS } from "../../../../queries/getCategoriesWithNews";
 
 const HomeLinks = [
   { href: "/", text: "Home – Layout 1", badge: "NEW" },
@@ -37,8 +37,7 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const path = usePathname();
 
-  const { loading, error, data } = useQuery(GET_CATEGORIES);
-
+  const { loading, error, data } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const mainCategories = data?.categories?.slice(0, 6) || [];
   const otherCategories = data?.categories?.slice(6) || [];
 
@@ -108,6 +107,16 @@ const Header = () => {
 
   const handleCloseButtonClick = () => {
     setIsSearchOpen(false);
+  };
+
+  const handleNavItemClick = () => {
+    const navbar = document.getElementById("navbarSupportedContent");
+    if (navbar && navbar.classList.contains("show")) {
+      const bsCollapse = new bootstrap.Collapse(navbar, {
+        toggle: true,
+      });
+      bsCollapse.hide();
+    }
   };
 
   return (
@@ -276,26 +285,25 @@ const Header = () => {
         </div>
         {/* END OF /. MIDDLE SECTION */}
         {/* START NAVIGATION */}
-        <nav className="custom-navbar navbar navbar-expand-lg sticky-top flex-column no-logo no-logo">
-          {/* Start Fullscreen Search */}
+        <nav className="custom-navbar navbar navbar-expand-lg sticky-top flex-column no-logo">
+          {/* Search Overlay */}
           <div
             className={`fullscreen-search-overlay ${
               isSearchOpen ? "fullscreen-search-overlay-show" : ""
             }`}
           >
-            <Link
+            <a
               href="#"
               className="fullscreen-close"
               onClick={handleCloseButtonClick}
               id="fullscreen-close-button"
             >
               <i className="ti ti-close" />
-            </Link>
+            </a>
             <div id="fullscreen-search-wrapper">
               <form method="get" id="fullscreen-searchform">
                 <input
                   type="text"
-                  defaultValue=""
                   placeholder="Type keyword(s) here"
                   id="fullscreen-search-input"
                 />
@@ -305,342 +313,88 @@ const Header = () => {
               </form>
             </div>
           </div>
-          {/* /. End Fullscreen Search */}
+
           <div className="container position-relative">
-            {/* Start Navbar Brand*/}
-            <Link className="navbar-brand d-md-none" href="/">
-              {/* <img class="logo-dark" src="assets/images/logo.png" alt=""> */}
-              <img src="./logo.jpeg" className="header-logo_dark" alt="" />
-              <img
-                src="assets/images/logo-white.png"
-                className="header-logo_white"
-                alt=""
-              />
+            {/* Mobile Logo */}
+            <Link className="navbar-brand d-lg-none" href="/">
+              <img src="/logo.jpeg" className="header-logo_dark" alt="Logo" />
             </Link>
-            {/* End Navbar Brand*/}
-            {/* Start Search Button */}
+
+            {/* Mobile Search Button */}
             <button
               type="button"
-              className="btn btn-search_two  ms-auto ms-md-0 d-lg-none"
+              className="btn btn-search_two ms-auto d-lg-none"
               onClick={handleSearchButtonClick}
             >
               <i className="fa fa-search" />
             </button>
 
-            {/* End Search Button */}
-            {/* Start Navbar Toggler Buton */}
+            {/* Toggle Button */}
             <button
-              className={`navbar-toggler ms-1`}
+              className="navbar-toggler ms-1"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
             >
               <span className="navbar-toggler-icon" />
             </button>
-            {/* End Navbar Toggler Buton */}
+
+            {/* Navigation Content */}
             <div
-              className={`collapse navbar-collapse`}
+              className="collapse navbar-collapse"
               id="navbarSupportedContent"
             >
-              {/* Start Navbar Collapse Header */}
-              <div className="align-items-center border-bottom d-flex d-lg-none  justify-content-between mb-3 navbar-collapse__header pb-3">
-                {/* Start Brand Logo For Mobile */}
-                <div className="collapse-brand flex-shrink-0">
-                  <Link href="/">
-                    <img
-                      src="assets/images/logo.png"
-                      className="header-logo_dark"
-                      alt=""
-                    />
-                  </Link>
-                  <Link href="/">
-                    <img
-                      src="assets/images/logo-white.png"
-                      className="header-logo_white"
-                      alt=""
-                    />
-                  </Link>
-                </div>
-                {/* End Brand Logo For Mobile */}
-                {/* Start Collapse Close Button */}
-                <div className="flex-grow-1 ms-3 text-end">
-                  <button
-                    type="button"
-                    className="bg-transparent border-0 collapse-close p-0 position-relative"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                  >
-                    <span /> <span />
-                  </button>
-                </div>
-                {/* End Collapse Close Button */}
+              {/* Mobile Header */}
+              <div className="d-lg-none border-bottom mb-3 pb-3 d-flex justify-content-between align-items-center">
+                <Link href="/" className="navbar-brand">
+                  <img
+                    src="/logo.jpeg"
+                    alt="Logo"
+                    className="header-logo_dark"
+                  />
+                </Link>
+                <button
+                  type="button"
+                  className="bg-transparent border-0 collapse-close"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#navbarSupportedContent"
+                >
+                  <span /> <span />
+                </button>
               </div>
-              {/* End Navbar Collapse Header */}
-              <ul className="navbar-nav">
-                {/* home dropdown menu */}
-                {/* <li className="nav-item dropdown">
-                                    <Link className="nav-link " href="/" id="dropdownMenuButton1" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                        Home
-                                    </Link>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 
-                                        {HomeLinks.slice(0, 9).map((link, index) => (
-                                            <li key={index}>
-                                                <Link className={`dropdown-item ${path === link.href ? 'active' : ''}`} href={link.href}>
-                                                    {link.text} {link.badge && <span className="menu-badge">{link.badge}</span>}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </li> */}
-
-                {/* MegaMenu */}
-                {/* <li className="nav-item dropdown mega-menu-content d-none d-lg-block">
-                                    <Link className="nav-link dropdown-toggle" href="#" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Mega Menu
-                                    </Link>
-                                    
-                                    <ul className="dropdown-menu mega-menu p-3 megamenu-content" aria-labelledby="dropdownMenuButton2">
-                                        <li>
-                                            <div className="row">
-                                                <div className="col-menu col-md-3">
-                                                    <h6 className="title">Accessories</h6>
-                                                    <div className="content">
-                                                        <ul className="menu-col">
-                                                            <li>
-                                                                <Link href="#">Beanies</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Caps &amp; Hats</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Glasses</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Gloves</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Jewellery</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Scarves</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="col-menu col-md-3">
-                                                    <h6 className="title">Sports</h6>
-                                                    <div className="content">
-                                                        <ul className="menu-col">
-                                                            <li>
-                                                                <Link href="#">Cricket</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Football</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Golf</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Leggings</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Cycling</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Shorts</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="col-menu col-md-3">
-                                                    <h6 className="title">Tops</h6>
-                                                    <div className="content">
-                                                        <ul className="menu-col">
-                                                            <li>
-                                                                <Link href="#">Cardigans</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Coats</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Hoodies &amp; Sweatshirts</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Jumpers</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Polo Shirts</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Shirts</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div className="col-menu col-md-3">
-                                                    <h6 className="title">Accessories</h6>
-                                                    <div className="content">
-                                                        <ul className="menu-col">
-                                                            <li>
-                                                                <Link href="#">Olympic</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Bomber jackets</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Denim Jackets</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Duffle Coats</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Leather Jackets</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="#">Parkas</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                            
-                                        </li>
-                                    </ul>
-                                </li> */}
-
-                {/* video */}
-                {/* <li className="nav-item dropdown mega-menu-content d-none d-lg-block" >
-                                    <Link className="nav-link dropdown-toggle" href="#" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Video
-                                    </Link>
-                                    
-                                    <ul className="dropdown-menu mega-menu p-3 megamenu-content" aria-labelledby="dropdownMenuButton3">
-                                        <li className="g-3 row">
-                                            <div className="col-menu-video col-md-3">
-                                                <Link className="video-nav-item" href="#">
-                                                    <div className="img-wrapper">
-                                                        <img
-                                                            src="assets/images/gallery-235x160-1.jpg"
-                                                            alt=""
-                                                            className="img-fluid"
-                                                        />
-                                                        <div className="link-icon">
-                                                            <i className="ti ti-video-camera" />
-                                                        </div>
-                                                    </div>
-                                                    <h4>
-                                                        It is a long established fact that a reader will be.{" "}
-                                                    </h4>
-                                                </Link>
-                                            </div>
-                                           
-                                            <div className="col-menu-video col-md-3">
-                                                <Link className="video-nav-item" href="#" >
-                                                    <div className="img-wrapper">
-                                                        <img
-                                                            src="assets/images/gallery-235x160-2.jpg"
-                                                            alt=""
-                                                            className="img-fluid"
-                                                        />
-                                                        <div className="link-icon">
-                                                            <i className="ti ti-video-camera" />
-                                                        </div>
-                                                    </div>
-                                                    <h4>
-                                                        It is a long established fact that a reader will be.{" "}
-                                                    </h4>
-                                                </Link>
-                                            </div>
-                                            
-                                            <div className="col-menu-video col-md-3">
-                                                <Link className="video-nav-item" href="#">
-                                                    <div className="img-wrapper">
-                                                        <img
-                                                            src="assets/images/gallery-235x160-3.jpg"
-                                                            alt=""
-                                                            className="img-fluid"
-                                                        />
-                                                        <div className="link-icon">
-                                                            <i className="ti ti-video-camera" />
-                                                        </div>
-                                                    </div>
-                                                    <h4>
-                                                        It is a long established fact that a reader will be.{" "}
-                                                    </h4>
-                                                </Link>
-                                            </div>
-                                            <div className="col-menu-video col-md-3">
-                                                <Link className="video-nav-item" href="#">
-                                                    <div className="img-wrapper">
-                                                        <img
-                                                            src="assets/images/gallery-235x160-4.jpg"
-                                                            alt=""
-                                                            className="img-fluid"
-                                                        />
-                                                        <div className="link-icon">
-                                                            <i className="ti ti-video-camera" />
-                                                        </div>
-                                                    </div>
-                                                    <h4>
-                                                        It is a long established fact that a reader will be.{" "}
-                                                    </h4>
-                                                </Link>
-                                            </div>
-                                            
-                                            <div className="col-menu-video col-md-3">
-                                                <Link className="video-nav-item" href="#">
-                                                    <div className="img-wrapper">
-                                                        <img
-                                                            src="assets/images/gallery-235x160-5.jpg"
-                                                            alt=""
-                                                            className="img-fluid"
-                                                        />
-                                                        <div className="link-icon">
-                                                            <i className="ti ti-video-camera" />
-                                                        </div>
-                                                    </div>
-                                                    <h4>
-                                                        It is a long established fact that a reader will be.{" "}
-                                                    </h4>
-                                                </Link>
-                                            </div>
-                                            
-                                        </li>
-                                    </ul>
-                                </li> */}
-
-                <li className="nav-item dropdown">
+              {/* Main Nav */}
+              <ul className="navbar-nav w-100">
+                {/* Home */}
+                <li className="nav-item">
                   <Link
-                    className="nav-link dropdown-toggle active"
+                    className={`nav-link ${path === "/" ? "active" : ""}`}
+                    href="/"
+                    onClick={handleNavItemClick}
+                  >
+                    Home
+                  </Link>
+                </li>
+
+                {/* Pages Dropdown */}
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link dropdown-toggle"
                     href="#"
                     role="button"
                     data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    aria-expanded="false"
                   >
                     Pages
-                  </Link>
+                  </a>
                   <ul className="dropdown-menu">
-                    <li className="nav-item dropdown dropend">
-                      <Link
+                    <li className="dropdown dropend">
+                      <a
                         className="dropdown-item dropdown-toggle"
                         href="#"
-                        role="button"
                         data-bs-toggle="dropdown"
-                        aria-expanded="false"
                       >
                         Home
-                      </Link>
+                      </a>
                       <ul className="dropdown-menu">
                         {HomeLinks.slice(0, 9).map((link, index) => (
                           <li key={index}>
@@ -649,8 +403,9 @@ const Header = () => {
                                 path === link.href ? "active" : ""
                               }`}
                               href={link.href}
+                              onClick={handleNavItemClick}
                             >
-                              {link.text}{" "}
+                              {link.text}
                               {link.badge && (
                                 <span className="menu-badge">{link.badge}</span>
                               )}
@@ -659,145 +414,118 @@ const Header = () => {
                         ))}
                       </ul>
                     </li>
-
-                    <li className="nav-item dropdown dropend">
-                      <Link
-                        className="dropdown-item dropdown-toggle"
-                        href="#"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        Category layout
-                      </Link>
-                      <ul className="dropdown-menu">
-                        {HomeLinks.slice(9, 12).map((link, index) => (
-                          <li key={index}>
-                            <Link
-                              className={`dropdown-item ${
-                                path === link.href ? "active" : ""
-                              }`}
-                              href={link.href}
-                            >
-                              {link.text}{" "}
-                              {link.badge && (
-                                <span className="menu-badge">{link.badge}</span>
-                              )}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                    <li className="nav-item dropdown dropend">
-                      <Link className="dropdown-item dropdown-toggle" href="#">
-                        Post template
-                      </Link>
-                      <ul className="dropdown-menu">
-                        {HomeLinks.slice(12, 15).map((link, index) => (
-                          <li key={index}>
-                            <Link
-                              className={`dropdown-item ${
-                                path === link.href ? "active" : ""
-                              }`}
-                              href={link.href}
-                            >
-                              {link.text}{" "}
-                              {link.badge && (
-                                <span className="menu-badge">{link.badge}</span>
-                              )}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                    {HomeLinks.slice(15, 19).map((link, index) => (
-                      <li key={index}>
-                        <Link
-                          className={`dropdown-item ${
-                            path === link.href ? "active" : ""
-                          }`}
-                          href={link.href}
-                        >
-                          {link.text}{" "}
-                          {link.badge && (
-                            <span className="menu-badge">{link.badge}</span>
-                          )}
-                        </Link>
-                      </li>
-                    ))}
                   </ul>
                 </li>
-                {/* {HomeLinks.slice(15, 30).map((link, index) => {
-                                    const isCategory = ['TRAVEL', 'BUSINESS', 'PHOTOGRAPHY', 'SPORTS'].includes(link.text.toUpperCase());
-                                    const href = isCategory ? `/category/${link.text.toLowerCase()}` : link.href;
 
-                                    return (
-                                        <li key={index} className="nav-item">
-                                            <Link className={`nav-link ${path === href ? 'active' : ''}`} href={href}>
-                                                {link.text} {link.badge && <span className="menu-badge">{link.badge}</span>}
-                                            </Link>
-                                        </li>
-                                    );
-                                })} */}
-
-                {/* Static page links */}
-                {/* {HomeLinks.slice(15).map((link, index) => (
-                  <li key={`static-${index}`} className="nav-item">
-                    <Link
-                      className={`nav-link ${
-                        path === link.href ? "active" : ""
-                      }`}
-                      href={link.href}
-                    >
-                      {link.text}
-                    </Link>
-                  </li>
-                ))} */}
-
-                <li className="nav-item ">
-                  <Link className="nav-link" href="/">
-                    Home
-                  </Link>
-                </li>
-
-                {/* Dynamically rendered categories from GraphQL */}
-                {/* {!loading &&
-                  !error &&
-                  data?.categories?.length > 0 &&
-                  data.categories.slice(0, 7).map((category) => {
-                    const href = `/category/${category.slug}`;
-                    return (
-                      <li key={category.id} className="nav-item">
-                        <Link
-                          className={`nav-link ${
-                            path === href ? "active" : ""
-                          }`}
-                          href={href}
-                        >
-                          {category.name}
-                        </Link>
-                      </li>
-                    );
-                  })} */}
-
+                {/* Categories */}
                 {!loading &&
                   !error &&
                   mainCategories.map((category) => {
                     const href = `/category/${category.slug}`;
+                    const isActive = path === href;
+                    const hasSub =
+                      category.subcategories &&
+                      category.subcategories.length > 0;
+
                     return (
-                      <li key={category.id} className="nav-item">
-                        <Link
-                          className={`nav-link ${
-                            path === href ? "active" : ""
-                          }`}
-                          href={href}
-                        >
-                          {category.name}
-                        </Link>
+                      <li
+                        key={category.id}
+                        className={`nav-item dropdown ${
+                          hasSub ? "dropdown" : ""
+                        } ${hasSub ? "d-lg-none" : ""}`}
+                      >
+                        {hasSub ? (
+                          <>
+                            <a
+                              className="nav-link dropdown-toggle"
+                              href="#"
+                              data-bs-toggle="dropdown"
+                            >
+                              {category.name}
+                            </a>
+                            <ul className="dropdown-menu">
+                              {category.subcategories.map((sub) => (
+                                <li key={sub.id}>
+                                  <Link
+                                    className="dropdown-item"
+                                    href={`/subcategory/${sub.slug}`}
+                                    onClick={handleNavItemClick}
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        ) : (
+                          <Link
+                            className={`nav-link ${isActive ? "active" : ""}`}
+                            href={href}
+                            onClick={handleNavItemClick}
+                          >
+                            {category.name}
+                          </Link>
+                        )}
                       </li>
                     );
                   })}
 
+                {/* Desktop Mega Menu */}
+                {!loading &&
+                  !error &&
+                  mainCategories.map((category) => {
+                    const href = `/category/${category.slug}`;
+                    const isActive = path === href;
+                    const hasSub =
+                      category.subcategories &&
+                      category.subcategories.length > 0;
+
+                    return (
+                      hasSub && (
+                        <li
+                          key={category.id}
+                          className="nav-item dropdown d-none d-lg-block mega-menu-content"
+                        >
+                          <Link
+                            className={`nav-link ${isActive ? "active" : ""}`}
+                            href={href}
+                          >
+                            {category.name}
+                          </Link>
+                          <ul className="dropdown-menu mega-menu p-3 megamenu-content">
+                            <li>
+                              <div className="row">
+                                {Array.from({
+                                  length: Math.ceil(
+                                    category.subcategories.length / 6
+                                  ),
+                                }).map((_, colIndex) => (
+                                  <div className="col-md-3" key={colIndex}>
+                                    <ul className="menu-col">
+                                      {category.subcategories
+                                        .slice(colIndex * 6, colIndex * 6 + 6)
+                                        .map((sub) => (
+                                          <li key={sub.id}>
+                                            <Link
+                                              href={`/subcategory/${sub.slug}`}
+                                              onClick={handleNavItemClick}
+                                            >
+                                              {sub.name}
+                                            </Link>
+                                          </li>
+                                        ))}
+                                    </ul>
+                                  </div>
+                                ))}
+                              </div>
+                            </li>
+                          </ul>
+                        </li>
+                      )
+                    );
+                  })}
+
+                {/* Other Categories */}
                 {otherCategories.length > 0 && (
                   <li className="nav-item dropdown">
                     <a
@@ -805,42 +533,40 @@ const Header = () => {
                       href="#"
                       role="button"
                       data-bs-toggle="dropdown"
-                      aria-expanded="false"
                     >
-                      <i className="fas fa-ellipsis-h" /> {/* 3 dots icon */}
+                      <i className="fas fa-ellipsis-h" />
                     </a>
                     <ul className="dropdown-menu">
-                      {otherCategories.map((category) => {
-                        const href = `/category/${category.slug}`;
-                        return (
-                          <li key={category.id}>
-                            <Link className="dropdown-item" href={href}>
-                              {category.name}
-                            </Link>
-                          </li>
-                        );
-                      })}
+                      {otherCategories.map((category) => (
+                        <li key={category.id}>
+                          <Link
+                            className="dropdown-item"
+                            href={`/category/${category.slug}`}
+                            onClick={handleNavItemClick}
+                          >
+                            {category.name}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </li>
                 )}
               </ul>
             </div>
-            <div className="w-100 w-lg-auto d-none d-lg-flex">
-              {/* Start Search Button */}
-              <div className="d-flex align-items-center">
-                <button
-                  type="button"
-                  className="btn btn-search_two ms-auto"
-                  onClick={handleSearchButtonClick}
-                >
-                  <i className="fa fa-search fa-lg" />
-                </button>
-              </div>
-              {/* End Search Button */}
+
+            {/* Desktop Search Button */}
+            <div className="d-none d-lg-flex">
+              <button
+                type="button"
+                className="btn btn-search_two ms-auto"
+                onClick={handleSearchButtonClick}
+              >
+                <i className="fa fa-search fa-lg" />
+              </button>
             </div>
-            {/* End Color Change Button */}
           </div>
         </nav>
+
         {/* END OF/. NAVIGATION */}
         {/* START SIDEBAR */}
         <nav id="sidebar" className={isSidebarActive ? "active p-4" : "p-4"}>
@@ -879,45 +605,6 @@ const Header = () => {
                 </Link>
               </li>
             </ul>
-            {/* <h5 className="wiget-title">Instagrams</h5> */}
-            {/* <ul className="g-1 insta_thumb list-unstyled p-0 row">
-                            <li className="col-6">
-                                <Link href="#" className="insta_effect d-inline-block position-relative">
-                                    <img
-                                        src="assets/images/instagram-1.jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </Link>
-                            </li>
-                            <li className="col-6">
-                                <Link href="#" className="insta_effect d-inline-block position-relative">
-                                    <img
-                                        src="assets/images/instagram-2.jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </Link>
-                            </li>
-                            <li className="col-6">
-                                <Link href="#" className="insta_effect d-inline-block position-relative">
-                                    <img
-                                        src="assets/images/instagram-3.jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </Link>
-                            </li>
-                            <li className="col-6">
-                                <Link href="#" className="insta_effect d-inline-block position-relative">
-                                    <img
-                                        src="assets/images/instagram-4.jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </Link>
-                            </li>
-                        </ul> */}
             <div className="mt-auto pb-3">
               {/* Address */}
               <p className="mb-2 fw-bold">New York, USA (HQ)</p>

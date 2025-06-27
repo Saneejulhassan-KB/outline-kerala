@@ -124,7 +124,7 @@ export default function Home() {
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
         {/* START NEWSTRICKER */}
-        <NewsTicker />
+        <NewsTicker trendingNews={trendingNews}/>
         {/*  END OF /. NEWSTRICKER */}
         {/* START FEATURE SECTION */}
         <div
@@ -392,13 +392,7 @@ export default function Home() {
                                     </span>
                                   </li>
                                   <li>
-                                    {new Date(
-                                      news.publishDate
-                                    ).toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "short",
-                                      day: "numeric",
-                                    })}
+                                  {new Date(news.publishDate).toDateString()}
                                   </li>
                                 </ul>
                                 <p>
@@ -446,9 +440,7 @@ export default function Home() {
                               </span>
                             </li>
                             <li>
-                              {new Date(
-                                trendingNews[0].publishDate
-                              ).toDateString()}
+                            {new Date(trendingNews[0].publishDate).toDateString()}
                             </li>
                           </ul>
                           <p
@@ -819,13 +811,7 @@ export default function Home() {
                                     </span>
                                   </li>
                                   <li>
-                                    {new Date(
-                                      news.publishDate
-                                    ).toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "short",
-                                      day: "numeric",
-                                    })}
+                                  {new Date(news.publishDate).toDateString()}
                                   </li>
                                 </ul>
                                 <p className="mb-0">
