@@ -248,7 +248,7 @@ const page = () => {
                     </div>
                   </div>
 
-                  {/* Post footer pagination */}
+                  {/* Post footer pagination.. */}
                   <div className="post-footer">
                     <div className="row thm-margin">
                       <div className="col-xs-12 col-sm-12 col-md-12 thm-padding">
