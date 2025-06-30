@@ -5,6 +5,7 @@ import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import "animate.css/animate.css";
 import Link from "next/link";
+import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 if (typeof window !== "undefined") {
   window.$ = window.jQuery = require("jquery");
 }
@@ -14,10 +15,20 @@ const OwlCarousel = dynamic(() => import("react-owl-carousel"), {
 });
 
 const HomeFeatureCarousal = () => {
-  const { loading, error, data } = useQuery(GET_LATEST_NEWS);
+  const { loading, error, data, refetch  } = useQuery(GET_LATEST_NEWS);
+  const errorUI = useSmartErrorHandler(error, refetch);
 
-  if (loading) return null;
-  if (error) return <p>Error loading featured news</p>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errorUI) return errorUI;
 
   const newsItems = data?.subcategories
     ?.flatMap((subcategory) =>

@@ -1,25 +1,22 @@
 import Link from 'next/link';
 
-const Tags = () => {
-  const tags = [
-    "Nature", "Fashion", "Wordpress", "Photo", "Travel", "Hotel",
-    "Business", "Culture", "Sports", "Design", "Entertainment"
-  ];
+const Tags = ({ tags = [] }) => {
+  
 
   return (
     <div className="panel_inner mb-0">
       <div className="panel_header">
-        <h4><strong>Tags </strong></h4>
+        <h4><strong>Tags</strong></h4>
       </div>
       <div className="panel_body">
         <div className="tags-inner d-flex flex-wrap gap-2">
-          {tags.map((tag, index) => (
+          {tags.map((tag) => (
             <Link
-              key={index}
-              href={`/category-style-two/${tag.toLowerCase()}`}
-              className="ui tag text-uppercase fw-semibold border"
+              key={tag.id}
+              href={`/tags/${tag.slug}`}
+              className="ui tag text-uppercase fw-semibold border px-2 py-1 rounded"
             >
-              {tag}
+              {tag.name}
             </Link>
           ))}
         </div>

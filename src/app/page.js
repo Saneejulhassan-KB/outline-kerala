@@ -17,9 +17,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES_WITH_NEWS } from "../../queries/getCategoriesWithNews";
+import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 
 export default function Home() {
-  const { loading, error, data } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const errorUI = useSmartErrorHandler(error, refetch);
 
   const [showAll, setShowAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,8 +52,17 @@ export default function Home() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errorUI) return errorUI;
 
   const allCategories = data?.categories || [];
 
@@ -97,6 +108,24 @@ export default function Home() {
   const latestNewsForFirstSlider = sortedNewsItemsForSlider.slice(0, 5);
   const latestNewsForSecondSlider = sortedNewsItemsForSlider.slice(9, 14);
   const fourImageLayoutNews = sortedNewsItemsForSlider.slice(5, 9);
+
+
+  // Flatten all tags from all news
+const allTags = allCategories.flatMap((cat) =>
+  cat.subcategories?.flatMap((sub) =>
+    sub.news?.flatMap((news) => news.tags || []) || []
+  ) || []
+);
+
+// Deduplicate tags by ID
+const uniqueTagsMap = new Map();
+allTags.forEach(tag => {
+  if (!uniqueTagsMap.has(tag.id)) {
+    uniqueTagsMap.set(tag.id, tag);
+  }
+});
+const uniqueTags = Array.from(uniqueTagsMap.values());
+
 
   //  Slice for each section
   // const firstSliderNews = newsItems.slice(0, 5);
@@ -1119,7 +1148,7 @@ export default function Home() {
                   <PollWidget />
                   {/* END OF /. POLL WIDGET */}
                   {/* START TAGS */}
-                  <Tags />
+                  <Tags tags={uniqueTags}/>
                   {/* END OF /. TAGS */}
                 </StickyBox>
               </div>

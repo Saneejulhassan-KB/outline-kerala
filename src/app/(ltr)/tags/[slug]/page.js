@@ -1,28 +1,27 @@
 "use client";
 
-import Layout from "@/components/ltr/layout/layout";
 import LeftCarousal from "@/components/ltr/left-carousal/left-carousal";
 import useRemoveBodyClass from "@/components/ltr/useEffect-hook/useEffect-hook";
 import Link from "next/link";
-import React, { useEffect } from "react";
 import StickyBox from "react-sticky-box";
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
+import { useQuery } from "@apollo/client";
+import Layout from "@/components/ltr/layout/layout";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../../queries/getCategoriesWithNews";
+import { useState } from "react";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
-
 const page = () => {
-  const { slug } = useParams();
+  const { slug } = useParams(); // Get tag slug from the URL
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 10;
+
   const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
-  const [currentPage, setCurrentPage] = useState(1);
 
   useRemoveBodyClass(
     ["None"],
     ["home-seven", "home-nine", "boxed-layout", "home-six", "home-two"]
   );
-  const articlesPerPage = 14;
 
   if (loading) {
     return (
@@ -36,34 +35,34 @@ const page = () => {
 
   if (errorUI) return errorUI;
 
-  const allCategories = data?.categories || [];
-
-  // Find the category by slug
-  const selectedCategory = allCategories.find((cat) => cat.slug === slug);
-
-  const newsItems =
-    selectedCategory?.subcategories?.flatMap((sub) =>
-      (sub.news || []).map((news) => ({
-        ...news,
-        subcategoryName: sub.name,
-        subcategorySlug: sub.slug,
-      }))
+  // ✅ Flatten all news items across categories/subcategories
+  const allNews =
+    data?.categories?.flatMap((category) =>
+      category.subcategories?.flatMap((sub) =>
+        (sub.news || []).map((news) => ({
+          ...news,
+          subcategoryName: sub.name,
+          subcategorySlug: sub.slug,
+        }))
+      )
     ) || [];
 
-  // Sort by latest (optional)
-  const sortedNewsItems = newsItems.sort((a, b) => b.id - a.id);
+  // ✅ Filter news by tag slug (case-sensitive match on tag name)
+  const filteredNews = allNews.filter((news) =>
+    news.tags.some((tag) => tag.name === slug)
+  );
 
-  const totalPages = Math.ceil(sortedNewsItems.length / articlesPerPage);
+  // ✅ Paginate
+  const totalPages = Math.ceil(filteredNews.length / articlesPerPage);
   const indexOfLast = currentPage * articlesPerPage;
   const indexOfFirst = indexOfLast - articlesPerPage;
-  const currentArticles = sortedNewsItems.slice(indexOfFirst, indexOfLast);
+  const currentArticles = filteredNews.slice(indexOfFirst, indexOfLast);
 
   const changePage = (pageNum) => {
     if (pageNum >= 1 && pageNum <= totalPages) {
       setCurrentPage(pageNum);
     }
   };
-
   return (
     <Layout>
       {/* START PAGE TITLE */}
@@ -72,7 +71,7 @@ const page = () => {
           <div className="align-items-center row">
             <div className="col">
               <h1 className="mb-sm-0">
-                <strong>{slug.toUpperCase()}</strong>
+                <strong>{slug?.toUpperCase()}</strong>
               </h1>
             </div>
             <div className="col-12 col-sm-auto">
@@ -82,7 +81,7 @@ const page = () => {
                     <Link href="/">Home</Link>
                   </li>
                   <li className="breadcrumb-item active" aria-current="page">
-                    {slug}
+                    Category Style Two
                   </li>
                 </ol>
               </nav>
@@ -91,211 +90,190 @@ const page = () => {
         </div>
       </div>
       {/* END OF /. PAGE TITLE */}
-
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
         {/* START POST BLOCK SECTION */}
-        {/* <section className="slider-inner">
-                    <div className="container">
-                        <div className="row thm-margin">
-                            <div className="col-md-6 thm-padding">
-                                <div className="slider-wrapper">
-                                    <LeftCarousal />
-                                </div>
-                            </div>
-                            <div className="col-md-6 thm-padding">
-                                <div className="row slider-right-post thm-margin">
-                                    <div className="col-6 col-sm-6 thm-padding">
-                                        <div className="slider-post post-height-2">
-                                            <a href="#" className="news-image">
-                                                <img
-                                                    src="https://i0.wp.com/www.socialnews.xyz/wp-content/uploads/2025/06/20/202506203432356.jpg?w=777&crop=0,10,777px,437px"
-                                                    alt=""
-                                                    className="img-fluid"
-                                                />
-                                            </a>
-                                            <div className="post-text">
-                                                <span className="post-category">Photography</span>
-                                                <h4>
-                                                    <a href="#">
-                                                        It is a long established fact that a reader will.
-                                                    </a>
-                                                </h4>
-                                                <ul className="authar-info d-flex flex-wrap">
-                                                    <li className="authar d-lg-block d-none">
-                                                        <a href="#">by david hall</a>
-                                                    </li>
-                                                    <li className="d-md-block d-none">May 29,2017</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6 col-sm-6 thm-padding">
-                                        <div className="slider-post post-height-2">
-                                            <a href="#" className="news-image">
-                                                <img
-                                                    src="https://c.ndtvimg.com/2024-10/p6am3msg_lionel-messi_625x300_20_October_24.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605"
-                                                    alt=""
-                                                    className="img-fluid"
-                                                />
-                                            </a>
-                                            <div className="post-text">
-                                                <span className="post-category">Technology</span>
-                                                <h4>
-                                                    <a href="#">
-                                                        There are many variations of passages of Lorem.
-                                                    </a>
-                                                </h4>
-                                                <ul className="authar-info d-flex flex-wrap">
-                                                    <li className="authar d-lg-block d-none">
-                                                        <a href="#">by david hall</a>
-                                                    </li>
-                                                    <li className="d-md-block d-none">May 29,2017</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6 col-sm-6 thm-padding">
-                                        <div className="slider-post post-height-2">
-                                            <a href="#" className="news-image">
-                                                <img
-                                                    src="https://tmssl.akamaized.net//images/foto/galerie/lionel-messi-1692504890-114379.jpg"
-                                                    alt=""
-                                                    className="img-fluid"
-                                                />
-                                            </a>
-                                            <div className="post-text">
-                                                <span className="post-category">Fashion</span>
-                                                <h4>
-                                                    <a href="#">
-                                                        Contrary to popular belief, Lorem Ipsum is not simply.
-                                                    </a>
-                                                </h4>
-                                                <ul className="authar-info d-flex flex-wrap">
-                                                    <li className="authar d-lg-block d-none">
-                                                        <a href="#">by david hall</a>
-                                                    </li>
-                                                    <li className="d-md-block d-none">May 29,2017</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6 col-sm-6 thm-padding">
-                                        <div className="slider-post post-height-2">
-                                            <a href="#" className="news-image">
-                                                <img
-                                                    src="https://i.abcnewsfe.com/a/4170ba56-bbb3-447f-854f-7c49bacbc49a/wirestory_9c0826eb3f1de3ca6decdb2f4cd27011_16x9.jpg?w=992"
-                                                    alt=""
-                                                    className="img-fluid"
-                                                />
-                                            </a>
-                                            <div className="post-text">
-                                                <span className="post-category">Travel</span>
-                                                <h4>
-                                                    <a href="#">
-                                                        Lorem Ipsum is simply dummy text of the printing
-                                                    </a>
-                                                </h4>
-                                                <ul className="authar-info d-flex flex-wrap">
-                                                    <li className="authar d-lg-block d-none">
-                                                        <a href="#">by david hall</a>
-                                                    </li>
-                                                    <li className="d-md-block d-none">May 29,2017</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section> */}
-        {/* END OF /. POST BLOCK SECTION */}
-        <div className="container">
-          <div className="row row-m">
-            {/* START MAIN CONTENT */}
-            <div className="col-sm-7 col-md-8 col-p main-content">
-              <StickyBox>
-                <div className="post-inner categoty-style-1">
-                  <div className="post-body">
-                    <div className="row row-m">
-                      {currentArticles.map((article) => (
-                        <div className="col-md-6 col-p" key={article.id}>
-                          <article>
-                            <figure>
-                              <a href={`/news/${article.slug}`}>
-                                <img
-                                  src={`https://backend.outlinekerala.com/media/${article.image}`}
-                                  alt={article.title}
-                                  className="img-fluid category-page-image"
-                                />
-                              </a>
-                              <span className="post-category">
-                                {article.subcategoryName}
-                              </span>
-                            </figure>
-                            <div className="post-info">
-                              <h3>
-                                <a href={`/news/${article.slug}`}>
-                                  {article.title}
-                                </a>
-                              </h3>
-                              <ul className="authar-info d-flex flex-wrap">
-                                <li>
-                                  <i className="ti ti-timer" />{" "}
-                                  {new Date(article.publishDate).toDateString()}
-                                </li>
-                                {/* <li>
-                                  <a href="#" className="link">
-                                    <i className="ti ti-thumb-up" /> 15 likes
-                                  </a>
-                                </li> */}
-                              </ul>
-                            </div>
-                          </article>
-                        </div>
-                      ))}
+        <section className="slider-inner">
+          <div className="container">
+            <div className="row thm-margin">
+              <div className="col-md-6 thm-padding">
+                <div className="slider-wrapper">
+                  <LeftCarousal />
+                </div>
+              </div>
+              <div className="col-md-6 thm-padding">
+                <div className="row slider-right-post thm-margin">
+                  <div className="col-6 col-sm-6 thm-padding">
+                    <div className="slider-post post-height-2">
+                      <a href="#" className="news-image">
+                        <img
+                          src="assets/images/slider-260x230-7.jpg"
+                          alt=""
+                          className="img-fluid"
+                        />
+                      </a>
+                      <div className="post-text">
+                        <span className="post-category">Photography</span>
+                        <h4>
+                          <a href="#">
+                            It is a long established fact that a reader will.
+                          </a>
+                        </h4>
+                        <ul className="authar-info d-flex flex-wrap">
+                          <li className="authar d-lg-block d-none">
+                            <a href="#">by david hall</a>
+                          </li>
+                          <li className="d-md-block d-none">May 29,2017</li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Post footer pagination.. */}
-                  <div className="post-footer">
-                    <div className="row thm-margin">
-                      <div className="col-xs-12 col-sm-12 col-md-12 thm-padding">
-                        <ul className="pagination">
-                          <li className={currentPage === 1 ? "disabled" : ""}>
-                            <span onClick={() => changePage(currentPage - 1)}>
-                              <i className="ti ti-angle-left" />
-                            </span>
+                  <div className="col-6 col-sm-6 thm-padding">
+                    <div className="slider-post post-height-2">
+                      <a href="#" className="news-image">
+                        <img
+                          src="assets/images/slider-260x230-8.jpg"
+                          alt=""
+                          className="img-fluid"
+                        />
+                      </a>
+                      <div className="post-text">
+                        <span className="post-category">Technology</span>
+                        <h4>
+                          <a href="#">
+                            There are many variations of passages of Lorem.
+                          </a>
+                        </h4>
+                        <ul className="authar-info d-flex flex-wrap">
+                          <li className="authar d-lg-block d-none">
+                            <a href="#">by david hall</a>
                           </li>
-
-                          {Array.from({ length: totalPages }).map((_, i) => (
-                            <li
-                              key={i}
-                              className={currentPage === i + 1 ? "active" : ""}
-                            >
-                              <span onClick={() => changePage(i + 1)}>
-                                {i + 1}
-                              </span>
-                            </li>
-                          ))}
-
-                          <li
-                            className={
-                              currentPage === totalPages ? "disabled" : ""
-                            }
-                          >
-                            <span onClick={() => changePage(currentPage + 1)}>
-                              <i className="ti ti-angle-right" />
-                            </span>
+                          <li className="d-md-block d-none">May 29,2017</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-sm-6 thm-padding">
+                    <div className="slider-post post-height-2">
+                      <a href="#" className="news-image">
+                        <img
+                          src="assets/images/slider-260x230-9.jpg"
+                          alt=""
+                          className="img-fluid"
+                        />
+                      </a>
+                      <div className="post-text">
+                        <span className="post-category">Fashion</span>
+                        <h4>
+                          <a href="#">
+                            Contrary to popular belief, Lorem Ipsum is not
+                            simply.
+                          </a>
+                        </h4>
+                        <ul className="authar-info d-flex flex-wrap">
+                          <li className="authar d-lg-block d-none">
+                            <a href="#">by david hall</a>
                           </li>
+                          <li className="d-md-block d-none">May 29,2017</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6 col-sm-6 thm-padding">
+                    <div className="slider-post post-height-2">
+                      <a href="#" className="news-image">
+                        <img
+                          src="assets/images/slider-260x230-10.jpg"
+                          alt=""
+                          className="img-fluid"
+                        />
+                      </a>
+                      <div className="post-text">
+                        <span className="post-category">Travel</span>
+                        <h4>
+                          <a href="#">
+                            Lorem Ipsum is simply dummy text of the printing
+                          </a>
+                        </h4>
+                        <ul className="authar-info d-flex flex-wrap">
+                          <li className="authar d-lg-block d-none">
+                            <a href="#">by david hall</a>
+                          </li>
+                          <li className="d-md-block d-none">May 29,2017</li>
                         </ul>
                       </div>
                     </div>
                   </div>
                 </div>
-              </StickyBox>
+              </div>
             </div>
+          </div>
+        </section>
+        {/* END OF /. POST BLOCK SECTION */}
+        <div className="container">
+          <div className="row row-m">
+            {/* START MAIN CONTENT */}
+            <div className="col-sm-7 col-md-8 col-p main-content">
+      <StickyBox>
+        <div className="post-inner">
+          <div className="post-head">
+            <h2 className="title">
+              <strong>Articles with tag:</strong> {slug}
+            </h2>
+          </div>
+          <div className="post-body">
+            {currentArticles.map((news) => (
+              <div key={news.id} className="news-list-item articles-list">
+                <div className="img-wrapper">
+                  <a href={`/news/${news.slug}`} className="thumb">
+                    <img
+                      src={`https://backend.outlinekerala.com/media/${news.image}`}
+                      alt={news.title}
+                      className="img-fluid"
+                    />
+                  </a>
+                </div>
+                <div className="post-info-2">
+                  <h4>
+                    <a href={`/news/${news.slug}`} className="title">
+                      {news.title}
+                    </a>
+                  </h4>
+                  <ul className="authar-info d-flex flex-wrap">
+                    <li>
+                      <i className="ti ti-timer" /> {news.publishDate}
+                    </li>
+                    <li>
+                      <span>
+                        <i className="ti ti-thumb-up" /> {news.likes?.length} likes
+                      </span>
+                    </li>
+                  </ul>
+                  <p className="d-lg-block d-none">{news.content?.slice(0, 150)}...</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="post-footer">
+              <div className="pagination">
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    className={currentPage === i + 1 ? "active" : ""}
+                    onClick={() => changePage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </StickyBox>
+    </div>
             {/* END OF /. MAIN CONTENT */}
             {/* START SIDE CONTENT */}
             <div className="col-sm-5 col-md-4 col-p rightSidebar">

@@ -7,6 +7,7 @@ import ThemeChanger from "../style-selectors/style-selector";
 
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../queries/getCategoriesWithNews";
+import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 
 const HomeLinks = [
   { href: "/", text: "Home – Layout 1", badge: "NEW" },
@@ -37,7 +38,9 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const path = usePathname();
 
-  const { loading, error, data } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const errorUI = useSmartErrorHandler(error, refetch);
+
   const mainCategories = data?.categories?.slice(0, 6) || [];
   const otherCategories = data?.categories?.slice(6) || [];
 
@@ -118,6 +121,18 @@ const Header = () => {
       bsCollapse.hide();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errorUI) return errorUI;
 
   return (
     <>
@@ -377,7 +392,7 @@ const Header = () => {
                 </li>
 
                 {/* Pages Dropdown */}
-                <li className="nav-item dropdown">
+                {/* <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle"
                     href="#"
@@ -415,7 +430,7 @@ const Header = () => {
                       </ul>
                     </li>
                   </ul>
-                </li>
+                </li> */}
 
                 {/* Categories */}
                 {!loading &&

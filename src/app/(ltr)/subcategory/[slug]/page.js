@@ -38,31 +38,34 @@ const page = () => {
 
   const allCategories = data?.categories || [];
 
-  // Find the category by slug
-  const selectedCategory = allCategories.find((cat) => cat.slug === slug);
+// Flatten all subcategories
+const allSubcategories = data?.categories
+?.flatMap((category) => category.subcategories || []) || [];
 
-  const newsItems =
-    selectedCategory?.subcategories?.flatMap((sub) =>
-      (sub.news || []).map((news) => ({
-        ...news,
-        subcategoryName: sub.name,
-        subcategorySlug: sub.slug,
-      }))
-    ) || [];
+//Find the subcategory matching the slug
+const selectedSubcategory = allSubcategories.find(
+(sub) => sub.slug === slug
+);
 
-  // Sort by latest (optional)
-  const sortedNewsItems = newsItems.sort((a, b) => b.id - a.id);
+if (!selectedSubcategory) {
+return <p>No subcategory found for slug: {slug}</p>;
+}
 
-  const totalPages = Math.ceil(sortedNewsItems.length / articlesPerPage);
-  const indexOfLast = currentPage * articlesPerPage;
-  const indexOfFirst = indexOfLast - articlesPerPage;
-  const currentArticles = sortedNewsItems.slice(indexOfFirst, indexOfLast);
+//Extract news and paginate
+const sortedNewsItems = [...(selectedSubcategory.news || [])].sort(
+(a, b) => b.id - a.id
+);
 
-  const changePage = (pageNum) => {
-    if (pageNum >= 1 && pageNum <= totalPages) {
-      setCurrentPage(pageNum);
-    }
-  };
+const totalPages = Math.ceil(sortedNewsItems.length / articlesPerPage);
+const indexOfLast = currentPage * articlesPerPage;
+const indexOfFirst = indexOfLast - articlesPerPage;
+const currentArticles = sortedNewsItems.slice(indexOfFirst, indexOfLast);
+
+const changePage = (pageNum) => {
+if (pageNum >= 1 && pageNum <= totalPages) {
+  setCurrentPage(pageNum);
+}
+};
 
   return (
     <Layout>

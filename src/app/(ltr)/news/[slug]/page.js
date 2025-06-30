@@ -7,18 +7,29 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { GET_LATEST_NEWS } from "../../../../../queries/getLatestNews";
 import Layout from "@/components/ltr/layout/layout";
+import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 
 const page = () => {
   const { slug } = useParams();
-  const { data, loading, error } = useQuery(GET_LATEST_NEWS);
+  const { loading, error, data, refetch  } = useQuery(GET_LATEST_NEWS);
+  const errorUI = useSmartErrorHandler(error, refetch);
 
   useRemoveBodyClass(
     ["None"],
     ["home-seven", "home-nine", "boxed-layout", "home-six", "home-two"]
   );
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading post</p>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (errorUI) return errorUI;
 
   const newsItems = data?.subcategories?.flatMap((subcategory) =>
     (subcategory.news || []).map((newsItem) => ({
