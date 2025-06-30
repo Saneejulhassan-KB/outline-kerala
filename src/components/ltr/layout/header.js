@@ -38,7 +38,7 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const path = usePathname();
 
-  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
   const mainCategories = data?.categories?.slice(0, 6) || [];
@@ -83,25 +83,29 @@ const Header = () => {
     const fullSkinSearch = () => {
       let wHeight = window.innerHeight;
 
-      // Search bar middle alignment
       const fullscreenSearchform = document.getElementById(
         "fullscreen-searchform"
       );
-      fullscreenSearchform.style.top = `${wHeight / 2}px`;
 
-      // Reform search bar on window resize
-      window.addEventListener("resize", () => {
-        wHeight = window.innerHeight;
+      if (fullscreenSearchform) {
         fullscreenSearchform.style.top = `${wHeight / 2}px`;
-      });
+
+        const handleResize = () => {
+          wHeight = window.innerHeight;
+          fullscreenSearchform.style.top = `${wHeight / 2}px`;
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        // Clean up resize event
+        return () => {
+          window.removeEventListener("resize", handleResize);
+        };
+      }
     };
 
-    fullSkinSearch(); // Call the function once the component is mounted
-
-    // Cleanup function if needed
-    return () => {
-      // Remove event listeners or perform cleanup if required
-    };
+    const cleanup = fullSkinSearch(); // Run once on mount
+    return cleanup || (() => {}); // Run cleanup if it exists
   }, []);
 
   const handleSearchButtonClick = () => {
