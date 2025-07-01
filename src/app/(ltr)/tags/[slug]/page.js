@@ -15,7 +15,7 @@ const page = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 10;
 
-  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
   useRemoveBodyClass(
@@ -35,7 +35,7 @@ const page = () => {
 
   if (errorUI) return errorUI;
 
-  // ✅ Flatten all news items across categories/subcategories
+  //  Flatten all news items across categories/subcategories
   const allNews =
     data?.categories?.flatMap((category) =>
       category.subcategories?.flatMap((sub) =>
@@ -47,12 +47,12 @@ const page = () => {
       )
     ) || [];
 
-  // ✅ Filter news by tag slug (case-sensitive match on tag name)
+  //  Filter news by tag slug (case-sensitive match on tag name)
   const filteredNews = allNews.filter((news) =>
-    news.tags.some((tag) => tag.name === slug)
+    news.tags?.some((tag) => tag.name.toLowerCase() === slug.toLowerCase())
   );
 
-  // ✅ Paginate
+  //  Paginate
   const totalPages = Math.ceil(filteredNews.length / articlesPerPage);
   const indexOfLast = currentPage * articlesPerPage;
   const indexOfFirst = indexOfLast - articlesPerPage;
@@ -81,7 +81,7 @@ const page = () => {
                     <Link href="/">Home</Link>
                   </li>
                   <li className="breadcrumb-item active" aria-current="page">
-                    Category Style Two
+                    {slug}
                   </li>
                 </ol>
               </nav>
@@ -93,7 +93,7 @@ const page = () => {
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
         {/* START POST BLOCK SECTION */}
-        <section className="slider-inner">
+        {/* <section className="slider-inner">
           <div className="container">
             <div className="row thm-margin">
               <div className="col-md-6 thm-padding">
@@ -208,72 +208,77 @@ const page = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* END OF /. POST BLOCK SECTION */}
         <div className="container">
           <div className="row row-m">
             {/* START MAIN CONTENT */}
             <div className="col-sm-7 col-md-8 col-p main-content">
-      <StickyBox>
-        <div className="post-inner">
-          <div className="post-head">
-            <h2 className="title">
-              <strong>Articles with tag:</strong> {slug}
-            </h2>
-          </div>
-          <div className="post-body">
-            {currentArticles.map((news) => (
-              <div key={news.id} className="news-list-item articles-list">
-                <div className="img-wrapper">
-                  <a href={`/news/${news.slug}`} className="thumb">
-                    <img
-                      src={`https://backend.outlinekerala.com/media/${news.image}`}
-                      alt={news.title}
-                      className="img-fluid"
-                    />
-                  </a>
-                </div>
-                <div className="post-info-2">
-                  <h4>
-                    <a href={`/news/${news.slug}`} className="title">
-                      {news.title}
-                    </a>
-                  </h4>
-                  <ul className="authar-info d-flex flex-wrap">
-                    <li>
-                      <i className="ti ti-timer" /> {news.publishDate}
-                    </li>
-                    <li>
-                      <span>
-                        <i className="ti ti-thumb-up" /> {news.likes?.length} likes
-                      </span>
-                    </li>
-                  </ul>
-                  <p className="d-lg-block d-none">{news.content?.slice(0, 150)}...</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              <StickyBox>
+                <div className="post-inner">
+                  <div className="post-head">
+                    <h2 className="title">
+                      <strong>{slug}</strong>
+                    </h2>
+                  </div>
+                  <div className="post-body">
+                    {currentArticles.map((news) => (
+                      <div
+                        key={news.id}
+                        className="news-list-item articles-list"
+                      >
+                        <div className="img-wrapper">
+                          <a href={`/news/${news.slug}`} className="thumb">
+                            <img
+                              src={`https://backend.outlinekerala.com/media/${news.image}`}
+                              alt={news.title}
+                              className="img-fluid"
+                            />
+                          </a>
+                        </div>
+                        <div className="post-info-2">
+                          <h4>
+                            <a href={`/news/${news.slug}`} className="title">
+                              {news.title}
+                            </a>
+                          </h4>
+                          <ul className="authar-info d-flex flex-wrap">
+                            <li>{new Date(news.publishDate).toDateString()}</li>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="post-footer">
-              <div className="pagination">
-                {[...Array(totalPages)].map((_, i) => (
-                  <button
-                    key={i}
-                    className={currentPage === i + 1 ? "active" : ""}
-                    onClick={() => changePage(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
+                            {/* <li>
+                              <span>
+                                <i className="ti ti-thumb-up" />{" "}
+                                {news.likes?.length} likes
+                              </span>
+                            </li> */}
+                          </ul>
+                          <p className="d-lg-block d-none">
+                            {news.content?.slice(0, 150)}...
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="post-footer">
+                      <div className="pagination">
+                        {[...Array(totalPages)].map((_, i) => (
+                          <button
+                            key={i}
+                            className={currentPage === i + 1 ? "active" : ""}
+                            onClick={() => changePage(i + 1)}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </StickyBox>
             </div>
-          )}
-        </div>
-      </StickyBox>
-    </div>
             {/* END OF /. MAIN CONTENT */}
             {/* START SIDE CONTENT */}
             <div className="col-sm-5 col-md-4 col-p rightSidebar">

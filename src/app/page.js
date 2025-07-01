@@ -20,7 +20,7 @@ import { GET_CATEGORIES_WITH_NEWS } from "../../queries/getCategoriesWithNews";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 
 export default function Home() {
-  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
   const [showAll, setShowAll] = useState(false);
@@ -94,6 +94,12 @@ export default function Home() {
   // Get the next two categories for the bottom  left sidebar
   const secondSlideCategories = allCategories.slice(3, 6);
 
+  // Get the next two categories for the bottom  right sidebar
+  const thirdSlideCategories = allCategories.slice(6, 9);
+
+  // Get the next two categories for the bottom  right sidebar
+  const fourthSlideCategories = allCategories.slice(9, 12);
+
   // Filter only news tagged with "Trending"
   const trendingNews = newsItems.filter((news) =>
     news.tags?.some((tag) => tag.name.toLowerCase() === "trending")
@@ -109,23 +115,22 @@ export default function Home() {
   const latestNewsForSecondSlider = sortedNewsItemsForSlider.slice(9, 14);
   const fourImageLayoutNews = sortedNewsItemsForSlider.slice(5, 9);
 
-
   // Flatten all tags from all news
-const allTags = allCategories.flatMap((cat) =>
-  cat.subcategories?.flatMap((sub) =>
-    sub.news?.flatMap((news) => news.tags || []) || []
-  ) || []
-);
+  const allTags = allCategories.flatMap(
+    (cat) =>
+      cat.subcategories?.flatMap(
+        (sub) => sub.news?.flatMap((news) => news.tags || []) || []
+      ) || []
+  );
 
-// Deduplicate tags by ID
-const uniqueTagsMap = new Map();
-allTags.forEach(tag => {
-  if (!uniqueTagsMap.has(tag.id)) {
-    uniqueTagsMap.set(tag.id, tag);
-  }
-});
-const uniqueTags = Array.from(uniqueTagsMap.values());
-
+  // Deduplicate tags by ID
+  const uniqueTagsMap = new Map();
+  allTags.forEach((tag) => {
+    if (!uniqueTagsMap.has(tag.id)) {
+      uniqueTagsMap.set(tag.id, tag);
+    }
+  });
+  const uniqueTags = Array.from(uniqueTagsMap.values());
 
   //  Slice for each section
   // const firstSliderNews = newsItems.slice(0, 5);
@@ -153,7 +158,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
         {/* START NEWSTRICKER */}
-        <NewsTicker trendingNews={trendingNews}/>
+        <NewsTicker trendingNews={trendingNews} />
         {/*  END OF /. NEWSTRICKER */}
         {/* START FEATURE SECTION */}
         <div
@@ -356,7 +361,6 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                             </a>
                           </h4>
                           <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
-                            
                             <li>{new Date(news.publishDate).toDateString()}</li>
                           </ul>
                         </div>
@@ -421,7 +425,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                                     </span>
                                   </li>
                                   <li>
-                                  {new Date(news.publishDate).toDateString()}
+                                    {new Date(news.publishDate).toDateString()}
                                   </li>
                                 </ul>
                                 <p>
@@ -469,7 +473,9 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                               </span>
                             </li>
                             <li>
-                            {new Date(trendingNews[0].publishDate).toDateString()}
+                              {new Date(
+                                trendingNews[0].publishDate
+                              ).toDateString()}
                             </li>
                           </ul>
                           <p
@@ -526,62 +532,89 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
             {/* START SIDE CONTENT */}
             <div className="col-sm-5 col-md-4 col-xl-3 rightSidebar">
               <StickyBox>
-                {/* START SOCIAL COUNTER TEXT */}
-                <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
-                  <i className="fa-solid fa-heart text-primary me-1" /> Join{" "}
-                  <span className="fw-bold mx-1">2.5M</span> Followers
-                </div>
-                {/* END OF /. SOCIAL COUNTER TEXT */}
-                {/* START SOCIAL ICON */}
-                <div className="social-media-inner">
-                  <ul className="g-1 row social-media">
-                    <li className="col-4">
-                      <a href="#" className="rss">
-                        <i className="fas fa-rss" />
-                        <div>2,035</div>
-                        <p>Subscribers</p>
-                      </a>
-                    </li>
-                    <li className="col-4">
-                      <a href="#" className="fb">
-                        <i className="fab fa-facebook-f" />
-                        <div>3,794</div>
-                        <p>Fans</p>
-                      </a>
-                    </li>
-                    <li className="col-4">
-                      <a href="#" className="insta">
-                        <i className="fab fa-instagram" />
-                        <div>941</div>
-                        <p>Followers</p>
-                      </a>
-                    </li>
-                    <li className="col-4">
-                      <a href="#" className="you_tube">
-                        <i className="fab fa-youtube" />
-                        <div>7,820</div>
-                        <p>Subscribers</p>
-                      </a>
-                    </li>
-                    <li className="col-4">
-                      <a href="#" className="twitter">
-                        <i className="fab fa-twitter" />
-                        <div>1,562</div>
-                        <p>Followers</p>
-                      </a>
-                    </li>
-                    <li className="col-4">
-                      <a href="#" className="pint">
-                        <i className="fab fa-pinterest-p" />
-                        <div>1,310</div>
-                        <p>Followers</p>
-                      </a>
-                    </li>
-                  </ul>{" "}
-                  {/* /.social icon */}
-                </div>
                 {/* END OF /. SOCIAL ICON */}
                 {/* START TRENDING TOPICS */}
+                {thirdSlideCategories.map((cat) => {
+                  // Flatten all news from subcategories under this category
+                  const categoryNews =
+                    cat.subcategories?.flatMap((sub) =>
+                      (sub.news || []).map((newsItem) => ({
+                        ...newsItem,
+                        subcategoryName: sub.name,
+                        subcategorySlug: sub.slug,
+                      }))
+                    ) || [];
+
+                  // Sort and pick latest 3
+                  const latestNews = categoryNews
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 3);
+
+                  return (
+                    <div className="panel_inner mb-4" key={cat.id}>
+                      <div className="panel_header">
+                        <h4>
+                          <Link href={`/category/${cat.slug}`}>
+                            <strong>{cat.name}</strong>
+                          </Link>
+                        </h4>
+                      </div>
+
+                      <div className="mb-3">
+                        <img
+                          src={`https://backend.outlinekerala.com/media/${cat.image}`}
+                          alt={cat.name}
+                          className="img-fluid w-100"
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            marginTop: "10px",
+                          }}
+                        />
+                      </div>
+
+                      <div className="panel_body">
+                        {latestNews.length > 0 ? (
+                          latestNews.map((news, index) => (
+                            <div
+                              key={news.id}
+                              className={`border-bottom pb-3 mb-3 ${
+                                index === latestNews.length - 1 ? "mb-0" : ""
+                              }`}
+                            >
+                              <h6>
+                                <Link href={`/news/${news.slug}`}>
+                                  {news.title.length > 70
+                                    ? news.title.slice(0, 70) + "..."
+                                    : news.title}
+                                </Link>
+                              </h6>
+                              <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
+                                <li>
+                                  <span className="post-category mb-0">
+                                    {news.subcategoryName || "General"}
+                                  </span>
+                                </li>
+                                <li>
+                                  {new Date(news.publishDate).toDateString()}
+                                </li>
+                              </ul>
+                              <p className="mb-0">
+                                {news.content
+                                  ?.replace(/<[^>]+>/g, "")
+                                  .slice(0, 120) || "No content"}
+                                ...
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No news available for {cat.name}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
                 <div className="panel_inner review-inner">
                   <div className="panel_header">
                     <h4>
@@ -624,9 +657,74 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                     )}
                   </div>
                 </div>
+
+                {fourthSlideCategories.map((cat) => {
+                  const allNews =
+                    cat.subcategories?.flatMap((sub) =>
+                      (sub.news || []).map((newsItem) => ({
+                        ...newsItem,
+                        subcategoryName: sub.name,
+                        subcategorySlug: sub.slug,
+                      }))
+                    ) || [];
+
+                  const categoryNews = allNews
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 3);
+
+                  return (
+                    <div key={cat.id}>
+                      <div className="panel_header">
+                        <h4>
+                          <Link href={`/category/${cat.slug}`}>
+                            <strong>{cat.name}</strong>
+                          </Link>
+                        </h4>
+                      </div>
+                      <div className="border-bottom posts">
+                        <ul>
+                          {categoryNews.map((news, index) => (
+                            <li
+                              key={news.id}
+                              className={`post-grid ${
+                                index >= 2 ? "d-none d-xl-block" : ""
+                              }`}
+                            >
+                              <div className="posts-inner px-0">
+                                <h6 className="posts-title">
+                                  <Link href={`/news/${news.slug}`}>
+                                    {news.title.length > 70
+                                      ? news.title.slice(0, 70) + "..."
+                                      : news.title}
+                                  </Link>
+                                </h6>
+                                <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
+                                  <li>
+                                    <span className="post-category">
+                                      {news.subcategoryName || "General"}
+                                    </span>
+                                  </li>
+                                  <li>
+                                    {new Date(news.publishDate).toDateString()}
+                                  </li>
+                                </ul>
+                                <p>
+                                  {news.content
+                                    ?.replace(/<[^>]+>/g, "")
+                                    .slice(0, 120) || "No content available"}
+                                  ...
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  );
+                })}
                 {/* END OF /. TRENDING TOPICS */}
                 {/* START LATEST REVIEWS */}
-                <div className="panel_inner review-inner">
+                {/* <div className="panel_inner review-inner">
                   <div className="panel_header">
                     <h4>
                       <strong>Latest</strong> Reviews
@@ -649,7 +747,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                         <i className="fa fa-star-o" />
                       </div>
                       <div className="post-text">
-                        {/* <span class="post-category">Technology</span> */}
+                       
                         <ul className="align-items-center authar-info d-flex flex-wrap gap-1 mb-1">
                           <li>
                             <span className="post-category mb-0">Travel</span>
@@ -750,7 +848,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* END OF /. LATEST REVIEWS */}
               </StickyBox>
             </div>
@@ -758,7 +856,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
           </div>
         </div>
         {/* START YOUTUBE VIDEO */}
-        <div className="mb-4 py-5 position-relative video-section">
+        {/* <div className="mb-4 py-5 position-relative video-section">
           <div className="container">
             <div className="row justify-content-center mb-5">
               <div className="col-md-6 text-center">
@@ -771,7 +869,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
             </div>
             <YoutubeVideo />
           </div>
-        </div>
+        </div> */}
         {/* END OF /. YOUTUBE VIDEO */}
         <section className="articles-wrapper">
           <div className="container">
@@ -840,7 +938,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                                     </span>
                                   </li>
                                   <li>
-                                  {new Date(news.publishDate).toDateString()}
+                                    {new Date(news.publishDate).toDateString()}
                                   </li>
                                 </ul>
                                 <p className="mb-0">
@@ -1034,7 +1132,7 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
               <div className="col-sm-5 col-md-4 col-xl-3 rightSidebar">
                 <StickyBox>
                   {/* START WEATHER */}
-                  <div className="weather-wrapper-2 weather-bg-2">
+                  {/* <div className="weather-wrapper-2 weather-bg-2">
                     <div className="weather-temperature">
                       <div className="weather-now">
                         <span className="big-degrees">39</span>
@@ -1128,10 +1226,10 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                       <div className="weather-date">Saturday, March 26th</div>
                       <div className="weather-city">San Francisco, CA</div>
                     </div>
-                  </div>
+                  </div> */}
                   {/* END OF /. WEATHER */}
                   {/* START ADVERTISEMENT */}
-                  <div className="add-inner">
+                  <div className="add-inner mt-4">
                     <img
                       src="https://inews-neon.vercel.app/assets/images/add320x270-1.jpg"
                       className="img-fluid"
@@ -1140,15 +1238,15 @@ const uniqueTags = Array.from(uniqueTagsMap.values());
                   </div>
                   {/* END OF /. ADVERTISEMENT */}
                   {/* START ARCHIVE */}
-                  <div className="archive-wrapper">
+                  {/* <div className="archive-wrapper">
                     <DatePickerComponents />
-                  </div>
+                  </div> */}
                   {/* END OF /. ARCHIVE */}
                   {/* START POLL WIDGET */}
-                  <PollWidget />
+                  {/* <PollWidget /> */}
                   {/* END OF /. POLL WIDGET */}
                   {/* START TAGS */}
-                  <Tags tags={uniqueTags}/>
+                  <Tags tags={uniqueTags} />
                   {/* END OF /. TAGS */}
                 </StickyBox>
               </div>

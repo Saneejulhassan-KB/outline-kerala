@@ -5,13 +5,13 @@ import Link from "next/link";
 import StickyBox from "react-sticky-box";
 import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
-import { GET_LATEST_NEWS } from "../../../../../queries/getLatestNews";
 import Layout from "@/components/ltr/layout/layout";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
+import { GET_CATEGORIES_WITH_NEWS } from "../../../../../queries/getCategoriesWithNews";
 
 const page = () => {
   const { slug } = useParams();
-  const { loading, error, data, refetch  } = useQuery(GET_LATEST_NEWS);
+  const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
   useRemoveBodyClass(
@@ -31,15 +31,17 @@ const page = () => {
 
   if (errorUI) return errorUI;
 
-  const newsItems = data?.subcategories?.flatMap((subcategory) =>
-    (subcategory.news || []).map((newsItem) => ({
-      ...newsItem,
-      categoryName: subcategory.name,
-    }))
+  const newsItems = data?.categories?.flatMap((category) =>
+    category.subcategories?.flatMap((subcategory) =>
+      (subcategory.news || []).map((newsItem) => ({
+        ...newsItem,
+        categoryName: category.name,
+        subcategoryName: subcategory.name,
+      }))
+    )
   );
 
-  const post = newsItems?.find((news) => news.slug === slug);
-
+  const post = newsItems?.find((news) => String(news.slug) === String(slug));
   if (!post) return <p>Post not found</p>;
 
   return (
@@ -279,7 +281,18 @@ const page = () => {
                   </div>
                   {/* post body */}
                   <div className="post-body">
-                    <RelatedArticles />
+                    <RelatedArticles
+                      articles={
+                        newsItems
+                          ?.filter(
+                            (item) =>
+                              item.categoryName === post.categoryName &&
+                              item.id !== post.id
+                          )
+                          ?.slice(-6) // last 6 articles (i.e., latest added, not by date)
+                          ?.reverse() // to show latest first
+                      }
+                    />
                   </div>
                   {/* Post footer */}
                   <div className="post-footer">

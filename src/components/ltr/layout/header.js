@@ -41,7 +41,7 @@ const Header = () => {
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
-  const mainCategories = data?.categories?.slice(0, 6) || [];
+  const mainCategories = data?.categories?.slice(0, 11) || [];
   const otherCategories = data?.categories?.slice(6) || [];
 
   const toggleSidebar = () => {
@@ -235,78 +235,53 @@ const Header = () => {
         {/* START MIDDLE SECTION */}
         <div className="d-md-block d-none header-mid">
           <div className="container">
-            <div className="align-items-center row justify-content-center">
-              <div className="col">
-                <div className="hstack gap-3">
-                  <div id="nav-icon" className={isSidebarActive ? "open" : ""}>
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className="vr" />
-                  <span className="fw-semibold text-uppercase menu-text">
-                    All Section
-                  </span>
-                </div>
-              </div>
+            <div className="row align-items-center">
+              {/* Left: Logo and Weather */}
               <div className="col-auto">
-                <div className="align-items-center d-flex gap-3">
-                  {/* Start weather text */}
-                  <div className="fs-5 fw-semibold weather-text">
-                    <WiDayLightning size={28} /> 11.23°C
-                  </div>
-                  {/* Start logo */}
+                <div className="d-flex align-items-center gap-3">
                   <Link href="/" className="header-logo">
                     <img
                       src="./logo.jpeg"
                       className="header-logo_dark"
-                      alt=""
+                      alt="Logo Dark"
                     />
                     <img
                       src="./logo.jpeg"
                       className="header-logo_white"
-                      alt=""
+                      alt="Logo White"
                     />
                   </Link>
-                  {/* Start language dropdown */}
-                  {/* <div className="dropdown language-dropdown">
-                                        <button
-                                            className="btn p-0 dropdown-toggle d-flex align-items-center gap-2"
-                                            type="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            <i className="fa-solid fa-earth-americas" />
-                                            <div className="fw-semibold">En</div>
-                                        </button>
-                                        <ul className="dropdown-menu">
-                                            <li>
-                                                <Link className="dropdown-item active" href="#">
-                                                    <i className="sl-flag flag-de" />
-                                                    <span className="language-text">De</span>
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link className="dropdown-item" href="#">
-                                                    <i className="sl-flag flag-usa" />
-                                                    <span className="language-text">En</span>
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </div> */}
+                  <div className="fs-5 fw-semibold weather-text">
+                    <WiDayLightning size={28} /> 11.23°C
+                  </div>
                 </div>
               </div>
-              <div className="col text-end fw-semibold text-uppercase date-text">
+
+              {/* Center: Ad Banner */}
+              <div className="col text-center">
+                <div className="add-inner mb-0">
+                  <img
+                    src="https://inews-neon.vercel.app/assets/images/add728x90-2.jpg"
+                    className="img-fluid"
+                    alt="Advertisement"
+                    style={{ maxHeight: "70px", maxWidth: "100%" }}
+                  />
+                </div>
+              </div>
+
+              {/* Right: Date */}
+              <div className="col-auto text-end fw-semibold text-uppercase date-text">
                 Friday, August 4
               </div>
             </div>
           </div>
         </div>
+
         {/* END OF /. MIDDLE SECTION */}
         {/* START NAVIGATION */}
         <nav className="custom-navbar navbar navbar-expand-lg sticky-top flex-column no-logo">
           {/* Search Overlay */}
-          <div
+          {/* <div
             className={`fullscreen-search-overlay ${
               isSearchOpen ? "fullscreen-search-overlay-show" : ""
             }`}
@@ -331,7 +306,7 @@ const Header = () => {
                 </i>
               </form>
             </div>
-          </div>
+          </div> */}
 
           <div className="container position-relative">
             {/* Mobile Logo */}
@@ -340,13 +315,13 @@ const Header = () => {
             </Link>
 
             {/* Mobile Search Button */}
-            <button
+            {/* <button
               type="button"
               className="btn btn-search_two ms-auto d-lg-none"
               onClick={handleSearchButtonClick}
             >
               <i className="fa fa-search" />
-            </button>
+            </button> */}
 
             {/* Toggle Button */}
             <button
@@ -574,7 +549,7 @@ const Header = () => {
             </div>
 
             {/* Desktop Search Button */}
-            <div className="d-none d-lg-flex">
+            {/* <div className="d-none d-lg-flex">
               <button
                 type="button"
                 className="btn btn-search_two ms-auto"
@@ -582,7 +557,7 @@ const Header = () => {
               >
                 <i className="fa fa-search fa-lg" />
               </button>
-            </div>
+            </div> */}
           </div>
         </nav>
 
