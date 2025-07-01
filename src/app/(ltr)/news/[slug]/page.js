@@ -8,8 +8,40 @@ import { useParams } from "next/navigation";
 import Layout from "@/components/ltr/layout/layout";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../../queries/getCategoriesWithNews";
+import { FaThumbsUp, FaThumbsDown, FaShareAlt } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { useState } from "react";
 
 const page = () => {
+  const [sortOption, setSortOption] = useState("latest");
+
+  const comments = [
+    {
+      id: 1,
+      name: "vava",
+      avatar: "V",
+      time: "now",
+      text: "No grass will walk. Since Pinu is the CM & Police under him.",
+    },
+    {
+      id: 2,
+      name: "commi udaippu",
+      avatar: "CU",
+      time: "13m",
+      text: "vediveppu prathiye cheap pm go back vilikalu maayi sweekarikkun illa",
+    },
+    {
+      id: 3,
+      name: "Christo Chiramukhathu",
+      avatarImg: "https://i.pravatar.cc/40?img=1",
+      time: "15m",
+      text: "അല്ല.. ഇതിപ്പോൾ ആർകാണ് പറയാൻ? അവലാതിയുമായ് പോലീസ്...",
+    },
+  ];
+
+  const sortedComments =
+    sortOption === "latest" ? [...comments].reverse() : [...comments];
+
   const { slug } = useParams();
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
@@ -43,6 +75,17 @@ const page = () => {
 
   const post = newsItems?.find((news) => String(news.slug) === String(slug));
   if (!post) return <p>Post not found</p>;
+
+  const allCategories = data?.categories || [];
+
+  // Get the next two categories for the bottom  left sidebar
+  const currentCategoryIndex = allCategories.findIndex(
+    (cat) => cat.name === post.categoryName
+  );
+  const secondSlideCategories = allCategories.slice(
+    currentCategoryIndex + 1,
+    currentCategoryIndex + 4
+  );
 
   return (
     <Layout>
@@ -295,7 +338,7 @@ const page = () => {
                     />
                   </div>
                   {/* Post footer */}
-                  <div className="post-footer">
+                  {/* <div className="post-footer">
                     <div className="row thm-margin">
                       <div className="col-md-8 thm-padding">
                         <Link href="#" className="more-btn">
@@ -352,16 +395,16 @@ const page = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 {/* END OF /. RELATED ARTICLES */}
                 {/* START COMMENT */}
-                <div className="comments-container">
+                {/* <div className="comments-container">
                   <h3>Comments (3)</h3>
                   <ul className="comments-list">
                     <li>
                       <div className="comment-main-level">
-                        {/* Avatar */}
+                        
                         <div className="comment-avatar">
                           <img src="assets/images/avatar-1.jpg" alt="" />
                         </div>
@@ -394,7 +437,7 @@ const page = () => {
                       </div>
                       <ul className="comments-list reply-list">
                         <li>
-                          {/* Avatar */}
+                          
                           <div className="comment-avatar">
                             <img src="assets/images/avatar-1.jpg" alt="" />
                           </div>
@@ -426,7 +469,7 @@ const page = () => {
                           </div>
                         </li>
                         <li>
-                          {/* Avatar */}
+                         
                           <div className="comment-avatar">
                             <img src="assets/images/avatar-1.jpg" alt="" />
                           </div>
@@ -461,7 +504,7 @@ const page = () => {
                     </li>
                     <li>
                       <div className="comment-main-level">
-                        {/* Avatar */}
+                        
                         <div className="comment-avatar">
                           <img src="assets/images/avatar-1.jpg" alt="" />
                         </div>
@@ -494,10 +537,139 @@ const page = () => {
                       </div>
                     </li>
                   </ul>
+                </div> */}
+
+                <div className="comments-container">
+                  <h5>Comments ({comments.length})</h5>
+
+                  {/* Comment Input */}
+                  <div
+                    className="comment-input-box"
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    <textarea
+                      placeholder="Write a comment"
+                      rows={3}
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                      }}
+                    ></textarea>
+                    <button
+                      style={{
+                        marginTop: "8px",
+                        float: "right",
+                        background: "#eb0254",
+                        color: "white",
+                        padding: "6px 16px",
+                        border: "none",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <div
+                    className="sort-bar"
+                    style={{
+                      marginBottom: "1rem",
+                      color: "#555",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <label htmlFor="sortSelect" style={{ marginRight: "10px" }}>
+                      <strong>Sort by</strong>
+                    </label>
+                    <select
+                      id="sortSelect"
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value)}
+                      style={{
+                        padding: "5px 10px",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <option value="latest">Latest</option>
+                      <option value="oldest">Oldest</option>
+                    </select>
+                  </div>
+
+                  {/* Comments List */}
+                  {sortedComments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      style={{ display: "flex", marginBottom: "1.5rem" }}
+                    >
+                      <div style={{ marginRight: "12px" }}>
+                        {comment.avatarImg ? (
+                          <img
+                            src={comment.avatarImg}
+                            alt={comment.name}
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                              backgroundColor: "#ddd",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: "bold",
+                              fontSize: "14px",
+                              color: "#333",
+                            }}
+                          >
+                            {comment.avatar}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ flexGrow: 1 }}>
+                        <div style={{ marginBottom: "2px" }}>
+                          <strong style={{ fontSize: "14px" }}>
+                            {comment.name}
+                          </strong>{" "}
+                          <span style={{ fontSize: "13px", color: "#666" }}>
+                            {comment.time}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: "15px", marginBottom: "6px" }}>
+                          {comment.text}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "12px",
+                            color: "#666",
+                            fontSize: "14px",
+                          }}
+                        >
+                          <FaThumbsUp style={{ cursor: "pointer" }} />
+                          <FaThumbsDown style={{ cursor: "pointer" }} />
+                          <span style={{ cursor: "pointer" }}>Share</span>
+                          <BsThreeDotsVertical
+                            style={{ marginLeft: "auto", cursor: "pointer" }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 {/* END OF /. COMMENT */}
                 {/* START COMMENTS FORMS */}
-                <form className="comment-form" action="#" method="post">
+                {/* <form className="comment-form" action="#" method="post">
                   <h3>
                     <strong>Leave</strong> a Comment
                   </h3>
@@ -566,7 +738,7 @@ const page = () => {
                     {" "}
                     Submit
                   </Link>
-                </form>
+                </form> */}
                 {/* END OF /. COMMENTS FORMS */}
               </StickyBox>
             </div>
@@ -576,21 +748,17 @@ const page = () => {
               <StickyBox>
                 {/* START ADVERTISEMENT */}
                 <div className="add-inner">
-                  <img
-                    src="assets/images/add320x270-1.jpg"
-                    className="img-fluid"
-                    alt=""
-                  />
+                  <img src="/ads.jpg" className="img-fluid" alt="Ad" />
                 </div>
                 {/* END OF /. ADVERTISEMENT */}
                 {/* START SOCIAL COUNTER TEXT */}
-                <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
+                {/* <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
                   <i className="fa-solid fa-heart text-primary me-1" /> Join{" "}
                   <span className="fw-bold mx-1">2.5M</span> Followers
-                </div>
+                </div> */}
                 {/* END OF /. SOCIAL COUNTER TEXT */}
                 {/* START SOCIAL ICON */}
-                <div className="social-media-inner mb-2">
+                {/* <div className="social-media-inner mb-2">
                   <ul className="g-1 row social-media">
                     <li className="col-4">
                       <Link href="#" className="rss">
@@ -635,11 +803,12 @@ const page = () => {
                       </Link>
                     </li>
                   </ul>{" "}
-                  {/* /.social icon */}
-                </div>
+                  
+                </div> */}
+
                 {/* END OF /. SOCIAL ICON */}
                 {/* START NAV TABS */}
-                <div className="tabs-wrapper">
+                {/* <div className="tabs-wrapper">
                   <ul className="nav nav-tabs" id="myTab" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
@@ -820,8 +989,91 @@ const page = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* END OF /. NAV TABS */}
+
+                {secondSlideCategories.map((cat) => {
+                  // Flatten all news from subcategories under this category
+                  const categoryNews =
+                    cat.subcategories?.flatMap((sub) =>
+                      (sub.news || []).map((newsItem) => ({
+                        ...newsItem,
+                        subcategoryName: sub.name,
+                        subcategorySlug: sub.slug,
+                      }))
+                    ) || [];
+
+                  // Sort and pick latest 3
+                  const latestNews = categoryNews
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 3);
+
+                  return (
+                    <div className="panel_inner mb-4" key={cat.id}>
+                      <div className="panel_header">
+                        <h4>
+                          <Link href={`/category/${cat.slug}`}>
+                            <strong>{cat.name}</strong>
+                          </Link>
+                        </h4>
+                      </div>
+
+                      <div className="mb-3">
+                        <img
+                          src={`https://backend.outlinekerala.com/media/${cat.image}`}
+                          alt={cat.name}
+                          className="img-fluid w-100"
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            marginTop: "10px",
+                            paddingLeft:'10px',
+                            paddingRight:'10px'
+                          }}
+                        />
+                      </div>
+
+                      <div className="panel_body">
+                        {latestNews.length > 0 ? (
+                          latestNews.map((news, index) => (
+                            <div
+                              key={news.id}
+                              className={`border-bottom pb-3 mb-3 ${
+                                index === latestNews.length - 1 ? "mb-0" : ""
+                              }`}
+                            >
+                              <h6>
+                                <Link href={`/news/${news.slug}`}>
+                                  {news.title.length > 70
+                                    ? news.title.slice(0, 70) + "..."
+                                    : news.title}
+                                </Link>
+                              </h6>
+                              <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
+                                <li>
+                                  <span className="post-category mb-0">
+                                    {news.subcategoryName || "General"}
+                                  </span>
+                                </li>
+                                <li>
+                                  {new Date(news.publishDate).toDateString()}
+                                </li>
+                              </ul>
+                              <p className="mb-0">
+                                {news.content
+                                  ?.replace(/<[^>]+>/g, "")
+                                  .slice(0, 120) || "No content"}
+                                ...
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No news available for {cat.name}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </StickyBox>
             </div>
             {/* END OF /. SIDE CONTENT */}

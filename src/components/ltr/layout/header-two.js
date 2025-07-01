@@ -162,7 +162,7 @@ const HeaderTwo = () => {
                                     alt=""
                                 />
                                 <img
-                                    src="assets/images/logo-white.png"
+                                    src="assets/images/logo.png"
                                     className="img-fluid header-logo_white"
                                     alt=""
                                 />

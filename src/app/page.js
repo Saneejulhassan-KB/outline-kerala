@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES_WITH_NEWS } from "../../queries/getCategoriesWithNews";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
+import GoldTicker from "@/components/ltr/gold-ticker-carousal/page";
 
 export default function Home() {
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
@@ -159,6 +160,7 @@ export default function Home() {
       <main className="page_main_wrapper">
         {/* START NEWSTRICKER */}
         <NewsTicker trendingNews={trendingNews} />
+        <GoldTicker  />
         {/*  END OF /. NEWSTRICKER */}
         {/* START FEATURE SECTION */}
         <div

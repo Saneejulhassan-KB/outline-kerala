@@ -8,6 +8,7 @@ import ThemeChanger from "../style-selectors/style-selector";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../queries/getCategoriesWithNews";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
+import AuthModal from "@/components/common/AuthModal";
 
 const HomeLinks = [
   { href: "/", text: "Home – Layout 1", badge: "NEW" },
@@ -37,6 +38,8 @@ const Header = () => {
   const [isOverlayActive, setOverlayActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const path = usePathname();
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState("login");
 
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
@@ -152,7 +155,7 @@ const Header = () => {
                   <ul className="align-items-center d-flex flex-wrap">
                     <li>
                       {/* Start header social */}
-                      <div className="header-social">
+                      {/* <div className="header-social">
                         <ul className="align-items-center d-flex gap-2">
                           <li>
                             <Link href="#">
@@ -185,15 +188,27 @@ const Header = () => {
                             </Link>
                           </li>
                         </ul>
-                      </div>
+                      </div> */}
                       {/* End of /. header social */}
                     </li>
                     <li className="d-none d-sm-block">
-                      <Link href="#">Contact</Link>
+                      <Link className="nav-link" href="/contact">
+                        Home
+                      </Link>
                     </li>
                     <li className="d-none d-sm-block">
-                      <Link href="#">Donation</Link>
+                      <Link className="nav-link" href="/contact">
+                        Contact Us
+                      </Link>
                     </li>
+                    <li className="d-none d-sm-block">
+                      <Link className="nav-link" href="/about">
+                        About Us
+                      </Link>
+                    </li>
+                    {/* <li className="d-none d-sm-block">
+                      <Link href="#">Donation</Link>
+                    </li> */}
                   </ul>
                 </div>
                 {/* End of /. top left menu */}
@@ -202,7 +217,7 @@ const Header = () => {
               <div className="col-auto ms-auto">
                 <div className="header-right-menu">
                   <ul className="d-flex justify-content-end">
-                    <li className="d-md-block d-none">
+                    {/* <li className="d-md-block d-none">
                       Currency:{" "}
                       <Link href="#" className="fw-bold">
                         USD
@@ -213,14 +228,29 @@ const Header = () => {
                       <Link href="#" className="fw-bold">
                         12
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
-                      {" "}
-                      <Link href="#">
-                        <i className="fa fa-lock" /> Sign Up{" "}
-                      </Link>
-                      <span className="fw-bold">or</span>
-                      <Link href="#"> Login</Link>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setAuthModalTab("signup");
+                          setAuthModalOpen(true);
+                        }}
+                      >
+                        <i className="fa fa-lock" /> Sign Up
+                      </a>
+                      <span className="fw-bold">/</span>
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setAuthModalTab("login");
+                          setAuthModalOpen(true);
+                        }}
+                      >
+                        Login
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -241,12 +271,12 @@ const Header = () => {
                 <div className="d-flex align-items-center gap-3">
                   <Link href="/" className="header-logo">
                     <img
-                      src="./logo.jpeg"
+                      src="/logo.jpeg"
                       className="header-logo_dark"
                       alt="Logo Dark"
                     />
                     <img
-                      src="./logo.jpeg"
+                      src="/logo.jpeg"
                       className="header-logo_white"
                       alt="Logo White"
                     />
@@ -495,11 +525,11 @@ const Header = () => {
                                   ),
                                 }).map((_, colIndex) => (
                                   <div className="col-md-3" key={colIndex}>
-                                    <ul className="menu-col">
+                                    <ul className="menu-col ">
                                       {category.subcategories
                                         .slice(colIndex * 6, colIndex * 6 + 6)
                                         .map((sub) => (
-                                          <li key={sub.id}>
+                                          <li key={sub.id} className="pt-2">
                                             <Link
                                               href={`/subcategory/${sub.slug}`}
                                               onClick={handleNavItemClick}
@@ -621,6 +651,11 @@ const Header = () => {
         <div className={isOverlayActive ? "overlay active" : "overlay"} />
       </header>
       {/* *** END OF /. PAGE HEADER SECTION *** */}
+      <AuthModal
+        show={isAuthModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authModalTab}
+      />
     </>
   );
 };

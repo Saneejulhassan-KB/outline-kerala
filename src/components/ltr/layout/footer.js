@@ -12,15 +12,17 @@ const Footer = () => {
       {/* *** START FOOTER *** */}
       <footer
         className="main-footer bg-img"
-        data-image-src="assets/images/1920x1000-1.jpg"
+        data-image-src="./footer.jpg"
       >
         <div className="container position-relative z-1">
           <div className="g-3 row">
             <div className="col-md-3">
               <img
-                src="assets/images/logo-white.png"
+                src="/logo.jpeg"
                 alt="footer logo"
                 className="img-fluid"
+                height={60}
+                width={60}
               />
             </div>
             <div className="col-md-5">
@@ -164,7 +166,7 @@ const Footer = () => {
             </div>
             {/* END OF /. FOOTER BOX (Category) */}
             {/* START FOOTER BOX (Recent Post) */}
-            <div className="col-sm-6 col-lg-3 footer-box py-4">
+            {/* <div className="col-sm-6 col-lg-3 footer-box py-4">
               <h5 className="wiget-title">Recent Post</h5>
               <div className="footer-news-grid">
                 <div className="news-list-item">
@@ -240,7 +242,7 @@ const Footer = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* END OF /. FOOTER BOX (Recent Post) */}
           </div>
           {/* START HOT TOPICS */}
@@ -320,7 +322,7 @@ const Footer = () => {
         <div className="container">
           <div className="align-items-center g-1 g-sm-3 row">
             <div className="col text-center text-sm-start">
-              <div className="copy">Copyright@2023 I-News Inc.</div>
+              <div className="copy">Copyright@2025 Outline-Kerala</div>
             </div>
             <div className="col-sm-auto">
               <ul className="footer-nav list-unstyled text-center mb-0">

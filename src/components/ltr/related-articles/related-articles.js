@@ -48,6 +48,7 @@ const RelatedArticles = ({ articles = [] }) => {
                             src={`https://backend.outlinekerala.com/media/${article.image}`}
                             className="img-fluid"
                             alt={article.title}
+                            style={{ height: "180px" }}
                           />
                           <div className="link-icon">
                             <i className="fa fa-play" />
