@@ -13,15 +13,16 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useMutation } from "@apollo/client";
-import { COMMENT_NEWS } from "../../../../../queries/mutations";
+import { COMMENT_NEWS, LIKE_NEWS } from "../../../../../queries/mutations";
 import { toast } from "react-toastify";
+import TimeAgo from "@/components/TimeAgo";
 
 const page = () => {
   const [sortOption, setSortOption] = useState("latest");
   const { isAuthenticated, user } = useAuth();
   const [commentText, setCommentText] = useState("");
   const [commentNews] = useMutation(COMMENT_NEWS);
-
+  const [visibleCount, setVisibleCount] = useState(8);
   const { slug } = useParams();
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
@@ -54,6 +55,26 @@ const page = () => {
       : [...comments].sort(
           (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
         );
+
+  {
+    visibleCount < sortedComments.length && (
+      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+        <button
+          onClick={() => setVisibleCount((prev) => prev + 10)}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#eb0254",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Show more comments
+        </button>
+      </div>
+    );
+  }
 
   const allCategories = data?.categories || [];
 
@@ -149,6 +170,58 @@ const page = () => {
                       alt={post.title}
                     />
                     <div dangerouslySetInnerHTML={{ __html: post.content }} />
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "20px",
+                        alignItems: "center",
+                        marginTop: "20px",
+                        padding: "12px 0",
+                        borderTop: "1px solid #eee",
+                        borderBottom: "1px solid #eee",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          color: "#666",
+                          fontWeight: "500",
+                          transition: "color 0.3s",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.color = "#eb0254")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.color = "#666")
+                        }
+                      >
+                        <FaThumbsUp /> <span>123</span>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          color: "#666",
+                          fontWeight: "500",
+                          transition: "color 0.3s",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.color = "#eb0254")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.color = "#666")
+                        }
+                      >
+                        {/* <FaThumbsDown /> <span>10</span> */}
+                      </div>
+                    </div>
                   </div>
                   {/* Post footer */}
                 </div>
@@ -251,7 +324,10 @@ const page = () => {
                         <select
                           id="sortSelect"
                           value={sortOption}
-                          onChange={(e) => setSortOption(e.target.value)}
+                          onChange={(e) => {
+                            setSortOption(e.target.value);
+                            setVisibleCount(8); // Reset visible count when sorting changes
+                          }}
                           style={{
                             padding: "5px 10px",
                             borderRadius: "4px",
@@ -270,70 +346,117 @@ const page = () => {
                           No comments yet.
                         </p>
                       ) : (
-                        sortedComments.map((comment) => (
-                          <div
-                            key={comment.id}
-                            style={{ display: "flex", marginBottom: "1.5rem" }}
-                          >
-                            <div style={{ marginRight: "12px" }}>
+                        <>
+                          {sortedComments
+                            .slice(0, visibleCount)
+                            .map((comment) => (
                               <div
-                                style={{
-                                  width: "40px",
-                                  height: "40px",
-                                  borderRadius: "50%",
-                                  backgroundColor: "#ddd",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  fontWeight: "bold",
-                                  fontSize: "14px",
-                                  color: "#333",
-                                }}
-                              >
-                                {comment.user?.username?.[0]?.toUpperCase() ||
-                                  "?"}
-                              </div>
-                            </div>
-                            <div style={{ flexGrow: 1 }}>
-                              <div style={{ marginBottom: "2px" }}>
-                                <strong style={{ fontSize: "14px" }}>
-                                  {comment.user.username}
-                                </strong>{" "}
-                                <span
-                                  style={{ fontSize: "13px", color: "#666" }}
-                                >
-                                  {new Date(comment.createdAt).toLocaleString()}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: "15px",
-                                  marginBottom: "6px",
-                                }}
-                              >
-                                {comment.content}
-                              </div>
-                              <div
+                                key={comment.id}
+                                className={`comment-item comment-item-${sortedComments.indexOf(
+                                  comment
+                                )}`}
                                 style={{
                                   display: "flex",
-                                  gap: "12px",
-                                  color: "#666",
-                                  fontSize: "14px",
+                                  marginBottom: "1.5rem",
                                 }}
                               >
-                                <FaThumbsUp style={{ cursor: "pointer" }} />
-                                <FaThumbsDown style={{ cursor: "pointer" }} />
-                                <span style={{ cursor: "pointer" }}>Share</span>
-                                <BsThreeDotsVertical
-                                  style={{
-                                    marginLeft: "auto",
-                                    cursor: "pointer",
-                                  }}
-                                />
+                                <div style={{ marginRight: "12px" }}>
+                                  <div
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      backgroundColor: "#ddd",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontWeight: "bold",
+                                      fontSize: "14px",
+                                      color: "#333",
+                                    }}
+                                  >
+                                    {comment.user?.username?.[0]?.toUpperCase() ||
+                                      "?"}
+                                  </div>
+                                </div>
+                                <div style={{ flexGrow: 1 }}>
+                                  <div style={{ marginBottom: "2px" }}>
+                                    <strong style={{ fontSize: "14px" }}>
+                                      {comment.user.username}
+                                    </strong>{" "}
+                                    <span
+                                      style={{
+                                        fontSize: "13px",
+                                        color: "#666",
+                                      }}
+                                    >
+                                      <TimeAgo date={comment.createdAt} />
+                                    </span>
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      fontSize: "15px",
+                                      marginBottom: "6px",
+                                    }}
+                                  >
+                                    {comment.content}
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: "12px",
+                                      color: "#666",
+                                      fontSize: "14px",
+                                    }}
+                                  >
+                                    {/* Optional Like/Share buttons here */}
+                                  </div>
+                                </div>
                               </div>
+                            ))}
+
+                          {visibleCount < sortedComments.length && (
+                            <div
+                              style={{ textAlign: "center", marginTop: "1rem" }}
+                            >
+                              <span
+                                onClick={() => {
+                                  setVisibleCount((prev) => prev + 10);
+                                  setTimeout(() => {
+                                    const lastComment = document.querySelector(
+                                      `.comment-item-${visibleCount}`
+                                    );
+                                    if (lastComment) {
+                                      lastComment.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "start",
+                                      });
+                                    }
+                                  }, 100);
+                                }}
+                                style={{
+                                  display: "inline-block",
+                                  padding: "8px 16px",
+                                  color: "#eb0254",
+                                  textDecoration: "underline",
+                                  fontWeight: "500",
+                                  cursor: "pointer",
+                                  transition: "color 0.3s",
+                                }}
+                                onMouseOver={(e) =>
+                                  (e.target.style.color = "#b3003f")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.target.style.color = "#eb0254")
+                                }
+                              >
+                                Show more comments
+                              </span>
                             </div>
-                          </div>
-                        ))
+                          )}
+                        </>
                       )}
                     </>
                   )}

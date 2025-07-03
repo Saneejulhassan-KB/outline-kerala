@@ -42,3 +42,12 @@ export const COMMENT_NEWS = gql`
     }
   }
 `;
+
+
+export const LIKE_NEWS = gql`
+   mutation LikeNews($newsId: Int!) {
+      likeNews(newsId: $newsId) {
+        liked
+      }
+    }
+`;

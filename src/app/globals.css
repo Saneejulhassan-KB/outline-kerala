@@ -4502,6 +4502,24 @@ figure.social-icon:hover a:nth-child(5) i {
     margin-bottom: 10px;
 }
 
+
+
+.comment-item {
+    animation: fadeInUp 0.3s ease both;
+  }
+  
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
 .customers {
     font-size: 14px;
     line-height: 25px;
