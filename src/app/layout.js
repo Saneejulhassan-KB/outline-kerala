@@ -6,6 +6,9 @@ import ImportJs from '@/components/ltr/import-js/import-js';
 import Providers from './theme-providers';
 import StyleSelectors from '@/components/rtl/style-selector/style-selector';
 import ApolloWrapper from '@/lib/apollo-provider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from '@/context/AuthContext';
 
 
 {/* *** START FONT DECLARATION *** */ }
@@ -42,13 +45,17 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <ImportJs />
       <body className={`${cormorant.variable} ${roboto.variable} ${sourceSans.variable}`}>
+        
       <ApolloWrapper>
+      <AuthProvider>
         <Providers>
           {children}
           <StyleSelectors />
+          <ToastContainer />
         </Providers>
+        </AuthProvider>
         </ApolloWrapper>
-
+        
 
       </body>
     </html>

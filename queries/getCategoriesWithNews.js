@@ -22,7 +22,7 @@ export const GET_CATEGORIES_WITH_NEWS = gql`
           tags {
             id
             name
-           slug
+            slug
           }
           comments {
             id

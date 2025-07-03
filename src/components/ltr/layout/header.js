@@ -4,11 +4,13 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { WiDayLightning } from "weather-icons-react";
 import ThemeChanger from "../style-selectors/style-selector";
-
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../queries/getCategoriesWithNews";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 import AuthModal from "@/components/common/AuthModal";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
+
 
 const HomeLinks = [
   { href: "/", text: "Home – Layout 1", badge: "NEW" },
@@ -40,7 +42,7 @@ const Header = () => {
   const path = usePathname();
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState("login");
-
+  const { isAuthenticated, logout } = useAuth();
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
@@ -230,28 +232,43 @@ const Header = () => {
                       </Link>
                     </li> */}
                     <li>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setAuthModalTab("signup");
-                          setAuthModalOpen(true);
-                        }}
-                      >
-                        <i className="fa fa-lock" /> Sign Up
-                      </a>
-                      <span className="fw-bold">/</span>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setAuthModalTab("login");
-                          setAuthModalOpen(true);
-                        }}
-                      >
-                        Login
-                      </a>
-                    </li>
+      {!isAuthenticated ? (
+        <>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setAuthModalTab("signup");
+              setAuthModalOpen(true);
+            }}
+          >
+            <i className="fa fa-lock" /> Sign Up
+          </a>
+          <span className="fw-bold">/</span>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setAuthModalTab("login");
+              setAuthModalOpen(true);
+            }}
+          >
+            Login
+          </a>
+        </>
+      ) : (
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            logout(); // 👈 this removes token & updates UI
+            toast.info("Logged out successfully.");
+          }}
+        >
+          <i className="fa fa-sign-out-alt" /> Logout
+        </a>
+      )}
+    </li>
                   </ul>
                 </div>
               </div>

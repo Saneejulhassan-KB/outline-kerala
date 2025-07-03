@@ -1,10 +1,65 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useMutation } from "@apollo/client";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { LOGIN_USER, REGISTER_USER } from "../../../queries/mutations";
+import { useAuth } from "@/context/AuthContext";
 
 const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
   const [activeTab, setActiveTab] = useState(defaultTab);
+  const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const [registerUser, { loading: regLoading }] = useMutation(REGISTER_USER);
+  const [loginUser, { loading: loginLoading }] = useMutation(LOGIN_USER);
+  const { login } = useAuth();
   if (!show) return null;
+
+  // Login handler
+  const onLogin = async (formData) => {
+    try {
+      const { data } = await loginUser({
+        variables: {
+          username: formData.username,
+          password: formData.password,
+        },
+      });
+
+      login(data.loginUser.token); // 👈 use AuthContext
+      toast.success(`Welcome back, ${data.loginUser.user.username}!`);
+      reset();
+      onClose();
+      router.push("/");
+    } catch (err) {
+      toast.error("Login failed: Invalid username or password.");
+    }
+  };
+  // Signup handler
+  const onSignup = async (formData) => {
+    try {
+      const { data } = await registerUser({
+        variables: {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        },
+      });
+
+      toast.success("Registration successful! Please log in.");
+      setActiveTab("login");
+      reset();
+    } catch (err) {
+      toast.error("Signup failed: Username or email may already exist.");
+    }
+  };
 
   return (
     <div
@@ -21,7 +76,10 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
                   className={`nav-link ${
                     activeTab === "login" ? "active" : ""
                   }`}
-                  onClick={() => setActiveTab("login")}
+                  onClick={() => {
+                    setActiveTab("login");
+                    reset();
+                  }}
                 >
                   Login
                 </button>
@@ -31,7 +89,10 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
                   className={`nav-link ${
                     activeTab === "signup" ? "active" : ""
                   }`}
-                  onClick={() => setActiveTab("signup")}
+                  onClick={() => {
+                    setActiveTab("signup");
+                    reset();
+                  }}
                 >
                   Sign Up
                 </button>
@@ -44,85 +105,115 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
               onClick={onClose}
             ></button>
           </div>
+
           <div className="modal-body p-4">
             {activeTab === "login" ? (
-              <form className="auth-form">
+              <form className="auth-form" onSubmit={handleSubmit(onLogin)}>
                 <h4 className="mb-3 fw-bold text-center">Welcome Back!</h4>
+
                 <div className="mb-3">
-                  <label className="form-label">User Name</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Enter Your Name"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password"
-                    required
-                  />
-                </div>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="rememberMe"
-                    />
-                    <label className="form-check-label" htmlFor="rememberMe">
-                      Remember me
-                    </label>
-                  </div>
-                  <a href="#" className="small text-decoration-none">
-                    Forgot password?
-                  </a>
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100 rounded-pill py-2 fw-bold"
-                >
-                  Login
-                </button>
-              </form>
-            ) : (
-              <form className="auth-form">
-                <h4 className="mb-3 fw-bold text-center">Create Account</h4>
-                <div className="mb-3">
-                  <label className="form-label">User Name</label>
+                  <label className="form-label">Username</label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Enter your name"
-                    required
+                    {...register("username", {
+                      required: "Username is required",
+                    })}
                   />
+                  {errors.username && (
+                    <small className="text-danger">
+                      {errors.username.message}
+                    </small>
+                  )}
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Email address</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Enter email"
-                    required
-                  />
-                </div>
+
                 <div className="mb-3">
                   <label className="form-label">Password</label>
                   <input
                     type="password"
                     className="form-control"
-                    placeholder="Password"
-                    required
+                    {...register("password", {
+                      required: "Password is required",
+                    })}
                   />
+                  {errors.password && (
+                    <small className="text-danger">
+                      {errors.password.message}
+                    </small>
+                  )}
                 </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary w-100 rounded-pill py-2 fw-bold"
+                  disabled={loginLoading}
+                >
+                  {loginLoading ? "Logging in..." : "Login"}
+                </button>
+              </form>
+            ) : (
+              <form className="auth-form" onSubmit={handleSubmit(onSignup)}>
+                <h4 className="mb-3 fw-bold text-center">Create Account</h4>
+
+                <div className="mb-3">
+                  <label className="form-label">Username</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    {...register("username", {
+                      required: "Username is required",
+                    })}
+                  />
+                  {errors.username && (
+                    <small className="text-danger">
+                      {errors.username.message}
+                    </small>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                        message: "Invalid email format",
+                      },
+                    })}
+                  />
+                  {errors.email && (
+                    <small className="text-danger">
+                      {errors.email.message}
+                    </small>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: { value: 6, message: "Min 6 characters" },
+                    })}
+                  />
+                  {errors.password && (
+                    <small className="text-danger">
+                      {errors.password.message}
+                    </small>
+                  )}
+                </div>
+
                 <button
                   type="submit"
                   className="btn btn-success w-100 rounded-pill py-2 fw-bold"
+                  disabled={regLoading}
                 >
-                  Sign Up
+                  {regLoading ? "Signing up..." : "Sign Up"}
                 </button>
               </form>
             )}

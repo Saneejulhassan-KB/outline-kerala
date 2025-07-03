@@ -1,26 +1,26 @@
 import { gql } from "@apollo/client";
 
 export const GET_LATEST_NEWS = gql`
- query{
-    subcategories{
+  query {
+    subcategories {
       id
       name
       slug
       image
-      news{
+      news {
         id
         title
         image
         slug
         content
         publishDate
-        tags{
+        tags {
           id
           name
         }
-        comments{
+        comments {
           id
-          user{
+          user {
             id
             username
           }
@@ -28,9 +28,9 @@ export const GET_LATEST_NEWS = gql`
           approved
           createdAt
         }
-        likes{
+        likes {
           id
-          user{
+          user {
             id
             username
           }
@@ -38,5 +38,4 @@ export const GET_LATEST_NEWS = gql`
       }
     }
   }
-
 `;

@@ -160,7 +160,7 @@ export default function Home() {
       <main className="page_main_wrapper">
         {/* START NEWSTRICKER */}
         <NewsTicker trendingNews={trendingNews} />
-        <GoldTicker  />
+        <GoldTicker />
         {/*  END OF /. NEWSTRICKER */}
         {/* START FEATURE SECTION */}
         <div
