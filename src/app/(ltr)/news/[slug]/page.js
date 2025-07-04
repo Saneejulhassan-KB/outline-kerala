@@ -10,7 +10,7 @@ import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../../queries/getCategoriesWithNews";
 import { FaThumbsUp, FaThumbsDown, FaShareAlt } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useMutation } from "@apollo/client";
 import { COMMENT_NEWS, LIKE_NEWS } from "../../../../../queries/mutations";
@@ -22,6 +22,11 @@ const page = () => {
   const { isAuthenticated, user } = useAuth();
   const [commentText, setCommentText] = useState("");
   const [commentNews] = useMutation(COMMENT_NEWS);
+
+  const [likeNews] = useMutation(LIKE_NEWS);
+  const [likeCount, setLikeCount] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
+
   const [visibleCount, setVisibleCount] = useState(8);
   const { slug } = useParams();
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
@@ -43,6 +48,7 @@ const page = () => {
   );
 
   const post = newsItems?.find((news) => String(news.slug) === String(slug));
+
   const comments = post?.comments || [];
 
   // const comments = post?.comments?.filter((c) => c.approved) || [];
@@ -78,6 +84,30 @@ const page = () => {
 
   const allCategories = data?.categories || [];
 
+  useEffect(() => {
+    if (!post?.likes || !Array.isArray(post.likes)) return;
+
+    // Always update like count
+    setLikeCount(post.likes.length);
+
+    console.log(
+      "Effect running — post:",
+      post,
+      "user:",
+      user,
+      "likes:",
+      post?.likes
+    );
+
+    // Only update hasLiked if user is available
+    if (user?.id) {
+      const userHasLiked = post.likes.some((like) => like.user?.id === user.id);
+      setHasLiked(userHasLiked);
+    } else {
+      setHasLiked(false); // in case user is not logged in
+    }
+  }, [post?.likes, user?.id]);
+
   // Get the next two categories for the bottom  left sidebar
   const currentCategoryIndex = allCategories.findIndex(
     (cat) => cat.name === post.categoryName
@@ -112,6 +142,28 @@ const page = () => {
       console.error("GraphQL Error Details:", error?.graphQLErrors);
       console.error("Network Error:", error?.networkError);
       toast.error("Failed to post comment. Check console for details.");
+    }
+  };
+
+  const handleLike = async () => {
+    if (!isAuthenticated) {
+      toast.warning("Please login to like the post.");
+      return;
+    }
+
+    try {
+      const { data } = await likeNews({
+        variables: { newsId: Number(post.id) },
+      });
+
+      const liked = data?.likeNews?.liked;
+
+      // Optimistically update UI
+      setHasLiked(liked);
+      setLikeCount((prev) => (liked ? prev + 1 : prev - 1));
+    } catch (error) {
+      console.error("Like error:", error);
+      toast.error("Failed to like/unlike.");
     }
   };
 
@@ -187,19 +239,25 @@ const page = () => {
                           display: "flex",
                           alignItems: "center",
                           gap: "6px",
-                          cursor: "pointer",
-                          color: "#666",
+                          cursor: isAuthenticated ? "pointer" : "not-allowed",
+                          color: hasLiked === true ? "#eb0254" : "#666", // this stays red if liked
                           fontWeight: "500",
-                          transition: "color 0.3s",
+                          transition: "color 0.3s ease",
                         }}
-                        onMouseOver={(e) =>
-                          (e.currentTarget.style.color = "#eb0254")
-                        }
-                        onMouseOut={(e) =>
-                          (e.currentTarget.style.color = "#666")
+                        onClick={handleLike}
+                        title={
+                          isAuthenticated
+                            ? "Like this article"
+                            : "Login to like"
                         }
                       >
-                        <FaThumbsUp /> <span>123</span>
+                        <FaThumbsUp
+                          style={{
+                            transform: hasLiked ? "scale(1.1)" : "scale(1.0)",
+                            transition: "transform 0.2s ease-in-out",
+                          }}
+                        />
+                        <span>{likeCount}</span>
                       </div>
 
                       <div
