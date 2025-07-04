@@ -11,7 +11,6 @@ import AuthModal from "@/components/common/AuthModal";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 
-
 const HomeLinks = [
   { href: "/", text: "Home – Layout 1", badge: "NEW" },
   { href: "/home-two", text: "Home – Layout 2", badge: "POPULAR" },
@@ -232,43 +231,43 @@ const Header = () => {
                       </Link>
                     </li> */}
                     <li>
-      {!isAuthenticated ? (
-        <>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              setAuthModalTab("signup");
-              setAuthModalOpen(true);
-            }}
-          >
-            <i className="fa fa-lock" /> Sign Up
-          </a>
-          <span className="fw-bold">/</span>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              setAuthModalTab("login");
-              setAuthModalOpen(true);
-            }}
-          >
-            Login
-          </a>
-        </>
-      ) : (
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            logout(); // 👈 this removes token & updates UI
-            toast.info("Logged out successfully.");
-          }}
-        >
-          <i className="fa fa-sign-out-alt" /> Logout
-        </a>
-      )}
-    </li>
+                      {!isAuthenticated ? (
+                        <>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAuthModalTab("signup");
+                              setAuthModalOpen(true);
+                            }}
+                          >
+                            <i className="fa fa-lock" /> Sign Up
+                          </a>
+                          <span className="fw-bold">/</span>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAuthModalTab("login");
+                              setAuthModalOpen(true);
+                            }}
+                          >
+                            Login
+                          </a>
+                        </>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            logout(); // 👈 this removes token & updates UI
+                            toast.info("Logged out successfully.");
+                          }}
+                        >
+                          <i className="fa fa-sign-out-alt" /> Logout
+                        </a>
+                      )}
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -567,7 +566,7 @@ const Header = () => {
                   })}
 
                 {/* Other Categories */}
-                {otherCategories.length > 0 && (
+                {/* {otherCategories.length > 0 && (
                   <li className="nav-item dropdown">
                     <a
                       className="nav-link dropdown-toggle"
@@ -591,7 +590,7 @@ const Header = () => {
                       ))}
                     </ul>
                   </li>
-                )}
+                )} */}
               </ul>
             </div>
 

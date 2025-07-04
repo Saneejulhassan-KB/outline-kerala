@@ -14,7 +14,7 @@ import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 
 const page = () => {
   const { slug } = useParams();
-  const { loading, error, data, refetch  } = useQuery(GET_CATEGORIES_WITH_NEWS);
+  const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -38,34 +38,52 @@ const page = () => {
 
   const allCategories = data?.categories || [];
 
-// Flatten all subcategories
-const allSubcategories = data?.categories
-?.flatMap((category) => category.subcategories || []) || [];
+  // Flatten all subcategories
+  const allSubcategories =
+    data?.categories?.flatMap((category) => category.subcategories || []) || [];
 
-//Find the subcategory matching the slug
-const selectedSubcategory = allSubcategories.find(
-(sub) => sub.slug === slug
-);
+  //Find the subcategory matching the slug
+  const selectedSubcategory = allSubcategories.find((sub) => sub.slug === slug);
 
-if (!selectedSubcategory) {
-return <p>No subcategory found for slug: {slug}</p>;
-}
+  if (!selectedSubcategory) {
+    return <p>No subcategory found for slug: {slug}</p>;
+  }
 
-//Extract news and paginate
-const sortedNewsItems = [...(selectedSubcategory.news || [])].sort(
-(a, b) => b.id - a.id
-);
+  // Step 1: Find the parent category of the selected subcategory
+  const parentCategory = allCategories.find((cat) =>
+    cat.subcategories?.some((sub) => sub.slug === slug)
+  );
 
-const totalPages = Math.ceil(sortedNewsItems.length / articlesPerPage);
-const indexOfLast = currentPage * articlesPerPage;
-const indexOfFirst = indexOfLast - articlesPerPage;
-const currentArticles = sortedNewsItems.slice(indexOfFirst, indexOfLast);
+  // Step 2: Get subcategory index inside parent category
+  let thirdSlideCategories = [];
 
-const changePage = (pageNum) => {
-if (pageNum >= 1 && pageNum <= totalPages) {
-  setCurrentPage(pageNum);
-}
-};
+  if (parentCategory) {
+    const currentIndex = allCategories.findIndex(
+      (cat) => cat.id === parentCategory.id
+    );
+
+    // Wrap around and pick next 3
+    for (let i = 1; i <= 3; i++) {
+      const nextIndex = (currentIndex + i) % allCategories.length;
+      thirdSlideCategories.push(allCategories[nextIndex]);
+    }
+  }
+
+  //Extract news and paginate
+  const sortedNewsItems = [...(selectedSubcategory.news || [])].sort(
+    (a, b) => b.id - a.id
+  );
+
+  const totalPages = Math.ceil(sortedNewsItems.length / articlesPerPage);
+  const indexOfLast = currentPage * articlesPerPage;
+  const indexOfFirst = indexOfLast - articlesPerPage;
+  const currentArticles = sortedNewsItems.slice(indexOfFirst, indexOfLast);
+
+  const changePage = (pageNum) => {
+    if (pageNum >= 1 && pageNum <= totalPages) {
+      setCurrentPage(pageNum);
+    }
+  };
 
   return (
     <Layout>
@@ -304,13 +322,13 @@ if (pageNum >= 1 && pageNum <= totalPages) {
             <div className="col-sm-5 col-md-4 col-p rightSidebar">
               <StickyBox>
                 {/* START SOCIAL COUNTER TEXT */}
-                <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
+                {/* <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
                   <i className="fa-solid fa-heart text-primary me-1" /> Join{" "}
                   <span className="fw-bold mx-1">2.5M</span> Followers
-                </div>
+                </div> */}
                 {/* END OF /. SOCIAL COUNTER TEXT */}
                 {/* START SOCIAL ICON */}
-                <div className="social-media-inner mb-2">
+                {/* <div className="social-media-inner mb-2">
                   <ul className="g-1 row social-media">
                     <li className="col-4">
                       <a href="#" className="rss">
@@ -355,20 +373,99 @@ if (pageNum >= 1 && pageNum <= totalPages) {
                       </a>
                     </li>
                   </ul>{" "}
-                  {/* /.social icon */}
-                </div>
+                  
+                </div> */}
                 {/* END OF /. SOCIAL ICON */}
                 {/* START ADVERTISEMENT */}
                 <div className="add-inner">
-                  <img
-                    src="assets/images/add320x270-1.jpg"
-                    className="img-fluid"
-                    alt=""
-                  />
+                  <img src="/ads.jpg" className="img-fluid" alt="Ad" />
                 </div>
+
+                {thirdSlideCategories.map((cat) => {
+                  // Flatten all news from subcategories under this category
+                  const categoryNews =
+                    cat.subcategories?.flatMap((sub) =>
+                      (sub.news || []).map((newsItem) => ({
+                        ...newsItem,
+                        subcategoryName: sub.name,
+                        subcategorySlug: sub.slug,
+                      }))
+                    ) || [];
+
+                  // Sort and pick latest 3
+                  const latestNews = categoryNews
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 3);
+
+                  return (
+                    <div className="panel_inner mb-4" key={cat.id}>
+                      <div className="panel_header">
+                        <h4>
+                          <Link href={`/category/${cat.slug}`}>
+                            <strong>{cat.name}</strong>
+                          </Link>
+                        </h4>
+                      </div>
+
+                      <div className="mb-3">
+                        <img
+                          src={`https://backend.outlinekerala.com/media/${cat.image}`}
+                          alt={cat.name}
+                          className="img-fluid w-100"
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            marginTop: "10px",
+                            paddingLeft: "10px",
+                            paddingRight: "10px",
+                          }}
+                        />
+                      </div>
+
+                      <div className="panel_body">
+                        {latestNews.length > 0 ? (
+                          latestNews.map((news, index) => (
+                            <div
+                              key={news.id}
+                              className={`border-bottom pb-3 mb-3 ${
+                                index === latestNews.length - 1 ? "mb-0" : ""
+                              }`}
+                            >
+                              <h6>
+                                <Link href={`/news/${news.slug}`}>
+                                  {news.title.length > 70
+                                    ? news.title.slice(0, 70) + "..."
+                                    : news.title}
+                                </Link>
+                              </h6>
+                              <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
+                                <li>
+                                  <span className="post-category mb-0">
+                                    {news.subcategoryName || "General"}
+                                  </span>
+                                </li>
+                                <li>
+                                  {new Date(news.publishDate).toDateString()}
+                                </li>
+                              </ul>
+                              <p className="mb-0">
+                                {news.content
+                                  ?.replace(/<[^>]+>/g, "")
+                                  .slice(0, 120) || "No content"}
+                                ...
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No news available for {cat.name}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
                 {/* END OF /. ADVERTISEMENT */}
                 {/* START NAV TABS */}
-                <div className="tabs-wrapper">
+                {/* <div className="tabs-wrapper">
                   <ul className="nav nav-tabs" id="myTab" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
@@ -549,7 +646,7 @@ if (pageNum >= 1 && pageNum <= totalPages) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* END OF /. NAV TABS */}
               </StickyBox>
             </div>

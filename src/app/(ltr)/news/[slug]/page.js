@@ -108,14 +108,19 @@ const page = () => {
     }
   }, [post?.likes, user?.id]);
 
-  // Get the next two categories for the bottom  left sidebar
   const currentCategoryIndex = allCategories.findIndex(
     (cat) => cat.name === post.categoryName
   );
-  const secondSlideCategories = allCategories.slice(
-    currentCategoryIndex + 1,
-    currentCategoryIndex + 4
-  );
+  
+  // Wrap-around next 3 categories excluding the current one
+  let secondSlideCategories = [];
+  
+  if (currentCategoryIndex !== -1) {
+    const after = allCategories.slice(currentCategoryIndex + 1);
+    const before = allCategories.slice(0, currentCategoryIndex); // wrap from start
+    secondSlideCategories = [...after, ...before].slice(0, 3);
+  }
+  
 
   console.log("Sending comment:", {
     newsId: post?.id,

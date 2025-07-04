@@ -52,6 +52,40 @@ const page = () => {
     news.tags?.some((tag) => tag.name.toLowerCase() === slug.toLowerCase())
   );
 
+  const allCategories = data?.categories || [];
+
+  let thirdSlideCategories = [];
+
+  if (filteredNews.length > 0) {
+    // Step 1: Find latest news
+    const latestTaggedNews = [...filteredNews].sort((a, b) => b.id - a.id)[0];
+
+    // Step 2: Find parent category
+    let parentCategoryIndex = -1;
+
+    for (let i = 0; i < allCategories.length; i++) {
+      const category = allCategories[i];
+      const hasNews = category.subcategories?.some((sub) =>
+        sub.news?.some((news) => news.id === latestTaggedNews.id)
+      );
+      if (hasNews) {
+        parentCategoryIndex = i;
+        break;
+      }
+    }
+
+    // Step 3: Get next 3 categories after parent, wrapping if needed
+    if (parentCategoryIndex !== -1) {
+      for (let i = 1; i <= 3; i++) {
+        const nextIndex = (parentCategoryIndex + i) % allCategories.length;
+        thirdSlideCategories.push(allCategories[nextIndex]);
+      }
+    }
+  } else {
+    // If no news found under tag, show first 3 categories
+    thirdSlideCategories = allCategories.slice(0, 3);
+  }
+
   //  Paginate
   const totalPages = Math.ceil(filteredNews.length / articlesPerPage);
   const indexOfLast = currentPage * articlesPerPage;
@@ -284,13 +318,13 @@ const page = () => {
             <div className="col-sm-5 col-md-4 col-p rightSidebar">
               <StickyBox>
                 {/* START SOCIAL COUNTER TEXT */}
-                <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
+                {/* <div className="align-items-center d-flex fs-6 justify-content-center mb-1 text-center social-counter-total">
                   <i className="fa-solid fa-heart text-primary me-1" /> Join{" "}
                   <span className="fw-bold mx-1">2.5M</span> Followers
-                </div>
+                </div> */}
                 {/* END OF /. SOCIAL COUNTER TEXT */}
                 {/* START SOCIAL ICON */}
-                <div className="social-media-inner mb-2">
+                {/* <div className="social-media-inner mb-2">
                   <ul className="g-1 row social-media">
                     <li className="col-4">
                       <a href="#" className="rss">
@@ -335,20 +369,98 @@ const page = () => {
                       </a>
                     </li>
                   </ul>{" "}
-                  {/* /.social icon */}
-                </div>
+                  
+                </div> */}
                 {/* END OF /. SOCIAL ICON */}
                 {/* START ADVERTISEMENT */}
                 <div className="add-inner">
-                  <img
-                    src="assets/images/add320x270-1.jpg"
-                    className="img-fluid"
-                    alt=""
-                  />
+                  <img src="/ads.jpg" className="img-fluid" alt="Ad" />
                 </div>
+
+                {thirdSlideCategories.map((cat) => {
+                  const categoryNews =
+                    cat.subcategories?.flatMap((sub) =>
+                      (sub.news || []).map((newsItem) => ({
+                        ...newsItem,
+                        subcategoryName: sub.name,
+                        subcategorySlug: sub.slug,
+                      }))
+                    ) || [];
+
+                  const latestNews = categoryNews
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 3);
+
+                  return (
+                    <div className="panel_inner mb-4" key={cat.id}>
+                      <div className="panel_header">
+                        <h4>
+                          <Link href={`/category/${cat.slug}`}>
+                            <strong>{cat.name}</strong>
+                          </Link>
+                        </h4>
+                      </div>
+
+                      <div className="mb-3">
+                        <img
+                          src={`https://backend.outlinekerala.com/media/${cat.image}`}
+                          alt={cat.name}
+                          className="img-fluid w-100"
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            marginTop: "10px",
+                            paddingLeft: "10px",
+                            paddingRight: "10px",
+                          }}
+                        />
+                      </div>
+
+                      <div className="panel_body">
+                        {latestNews.length > 0 ? (
+                          latestNews.map((news, index) => (
+                            <div
+                              key={news.id}
+                              className={`border-bottom pb-3 mb-3 ${
+                                index === latestNews.length - 1 ? "mb-0" : ""
+                              }`}
+                            >
+                              <h6>
+                                <Link href={`/news/${news.slug}`}>
+                                  {news.title.length > 70
+                                    ? news.title.slice(0, 70) + "..."
+                                    : news.title}
+                                </Link>
+                              </h6>
+                              <ul className="align-items-center authar-info d-flex flex-wrap gap-1">
+                                <li>
+                                  <span className="post-category mb-0">
+                                    {news.subcategoryName || "General"}
+                                  </span>
+                                </li>
+                                <li>
+                                  {new Date(news.publishDate).toDateString()}
+                                </li>
+                              </ul>
+                              <p className="mb-0">
+                                {news.content
+                                  ?.replace(/<[^>]+>/g, "")
+                                  .slice(0, 120) || "No content"}
+                                ...
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No news available for {cat.name}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
                 {/* END OF /. ADVERTISEMENT */}
                 {/* START NAV TABS */}
-                <div className="tabs-wrapper">
+                {/* <div className="tabs-wrapper">
                   <ul className="nav nav-tabs" id="myTab" role="tablist">
                     <li className="nav-item" role="presentation">
                       <button
@@ -529,7 +641,7 @@ const page = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* END OF /. NAV TABS */}
               </StickyBox>
             </div>
