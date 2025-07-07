@@ -1,41 +1,37 @@
 "use client";
 import React from "react";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocale from "dayjs/plugin/updateLocale";
+import isToday from "dayjs/plugin/isToday";
+import isYesterday from "dayjs/plugin/isYesterday";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import weekday from "dayjs/plugin/weekday";
 
-dayjs.extend(relativeTime);
-dayjs.extend(updateLocale);
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(localizedFormat);
+dayjs.extend(weekday);
 
-dayjs.updateLocale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: (str) => {
-      if (["just now", "today", "yesterday"].includes(str)) return str;
-      return `${str} ago`;
-    },
-    s: "just now",
-    m: "a minute",
-    mm: "%d minutes",
-    h: "an hour",
-    hh: "%d hours",
-    d: "today",
-    dd: (n) => (n === 1 ? "yesterday" : `${n} days`),
-    M: "a month",
-    MM: "%d months",
-    y: "a year",
-    yy: "%d years",
-  },
-});
-
-const TimeAgo = ({ date }) => {
+const CommentTimestamp = ({ date }) => {
   if (!date) return null;
 
-  return (
-    <span title={dayjs(date).format("MMM D, YYYY h:mm A")}>
-      {dayjs(date).fromNow()}
-    </span>
-  );
+  const now = dayjs();
+  const d = dayjs(date);
+
+  let formatted;
+
+  if (d.isToday()) {
+    formatted = d.format("h:mm A");
+  } else if (d.isYesterday()) {
+    formatted = "Yesterday";
+  } else if (now.diff(d, "day") < 7) {
+    formatted = d.format("dddd"); // Monday, Tuesday...
+  } else if (now.year() === d.year()) {
+    formatted = d.format("D MMM"); // 5 Jul
+  } else {
+    formatted = d.format("D MMM YYYY"); // 5 Jul 2023
+  }
+
+  return <span title={d.format("D MMM YYYY, h:mm A")}>{formatted}</span>;
 };
 
-export default TimeAgo;
+export default CommentTimestamp;

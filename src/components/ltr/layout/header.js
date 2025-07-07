@@ -317,7 +317,13 @@ const Header = () => {
 
               {/* Right: Date */}
               <div className="col-auto text-end fw-semibold text-uppercase date-text">
-                Friday, August 4
+                {new Date()
+                  .toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  })
+                  .toUpperCase()}
               </div>
             </div>
           </div>

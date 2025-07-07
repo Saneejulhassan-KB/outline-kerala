@@ -7,7 +7,6 @@ import { useQuery } from "@apollo/client";
 
 const Footer = () => {
   useBackgroundImageLoader();
-
   const { data, loading, error } = useQuery(GET_CATEGORIES_WITH_NEWS);
 
   if (loading) return null;
@@ -15,123 +14,315 @@ const Footer = () => {
 
   const categories = data?.categories || [];
 
-  // Collect unique tags
-  const allTags = categories
-    .flatMap((cat) =>
-      cat.subcategories?.flatMap((sub) =>
-        sub.news?.flatMap((news) => news.tags || [])
-      )
-    )
-    .filter(Boolean);
-
-  const uniqueTagsMap = new Map();
-  allTags.forEach((tag) => {
-    if (!uniqueTagsMap.has(tag.id)) {
-      uniqueTagsMap.set(tag.id, tag);
-    }
-  });
-
-  const uniqueTags = Array.from(uniqueTagsMap.values());
-
   return (
     <>
       <ScrollToTopUI />
 
       {/* START FOOTER */}
-      <footer className="main-footer bg-img" data-image-src="./footer.jpg">
+      <footer className="main-footer position-relative overflow-hidden" style={{
+        background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+        padding: '4rem 0 2rem 0'
+      }}>
+        {/* Background Pattern */}
+        <div className="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+          <div style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            width: '100%',
+            height: '100%'
+          }}></div>
+        </div>
+
         <div className="container position-relative z-1">
-          <div className="row">
-            {/* Logo Box */}
-            <div className="col-sm-6 col-lg-3 footer-box py-4">
-              <div className="about-inner text-center">
-                <div className="mb-3 d-inline-block">
-                  <a href="/" className="footer-logo">
-                  <img
-                    src="/logo.jpeg"
-                    alt="footer logo"
-                    className="img-fluid"
-                    height={146}
-                    width={146}
-                  />
-                  </a>
-                 
-                </div>
+          <div className="row g-5">
+            {/* Logo and Caption */}
+            <div className="col-sm-6 col-lg-3 footer-box">
+              <div className="text-center text-lg-start">
+                <a href="/" className="footer-logo d-inline-block mb-4">
+                  <div style={{
+                    
+                    borderRadius: '15px',
+                    padding: '15px',
+                    display: 'inline-block',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                  }}>
+                    <img
+                      src="/logo.jpeg"
+                      alt="footer logo"
+                      className="img-fluid rounded"
+                      width={80}
+                      height={80}
+                      style={{ filter: 'brightness(1.1)' }}
+                    />
+                  </div>
+                </a>
+                <h4 className="text-white fw-bold mb-3" style={{ fontSize: '1.5rem' }}>
+                  Outline Kerala
+                </h4>
+                <p className="text-white-50 mb-3" style={{ lineHeight: '1.6' }}>
+                  Your Voice, Your News
+                </p>
+                <p className="text-white-50 small" style={{ lineHeight: '1.5' }}>
+                  Delivering timely and trusted news stories from Kerala and beyond, keeping you informed with the latest updates and breaking news.
+                </p>
               </div>
             </div>
 
-            {/* Category Box */}
-            <div className="col-sm-6 col-lg-3 footer-box py-4">
-              <h5 className="wiget-title">Categories</h5>
-              <ul className="list-unstyled m-0 menu-services">
-                {categories.map((category) => (
-                  <li key={category.id}>
-                    <a href={`/category/${category.slug}`}>{category.slug}</a>
+            {/* Categories */}
+            <div className="col-sm-6 col-lg-3 footer-box">
+              <h5 className="text-white fw-bold mb-4" style={{ 
+                fontSize: '1.2rem',
+                position: 'relative',
+                paddingBottom: '10px'
+              }}>
+                Categories
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  width: '40px',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #ff6b6b, #ffa500)',
+                  borderRadius: '2px'
+                }}></div>
+              </h5>
+              <ul className="list-unstyled m-0">
+                {categories.length > 0 ? (
+                  categories.slice(0, 6).map((category, index) => (
+                    <li key={category.id} className="mb-2">
+                      <a 
+                        href={`/category/${category.slug}`} 
+                        className="text-white-50 text-decoration-none d-flex align-items-center"
+                        style={{
+                          transition: 'all 0.3s ease',
+                          padding: '8px 0',
+                          borderRadius: '8px',
+                          paddingLeft: '10px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = '#ffffff';
+                          e.target.style.background = 'rgba(255,255,255,0.1)';
+                          e.target.style.transform = 'translateX(5px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = 'rgba(255,255,255,0.7)';
+                          e.target.style.background = 'transparent';
+                          e.target.style.transform = 'translateX(0)';
+                        }}
+                      >
+                        <span style={{ 
+                          width: '4px', 
+                          height: '4px', 
+                          background: '#ff6b6b', 
+                          borderRadius: '50%', 
+                          marginRight: '12px',
+                          display: 'inline-block'
+                        }}></span>
+                        {category.slug.charAt(0).toUpperCase() + category.slug.slice(1)}
+                      </a>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-white-50">No categories found</li>
+                )}
+              </ul>
+            </div>
+
+            {/* Quick Links */}
+            <div className="col-sm-6 col-lg-3 footer-box">
+              <h5 className="text-white fw-bold mb-4" style={{ 
+                fontSize: '1.2rem',
+                position: 'relative',
+                paddingBottom: '10px'
+              }}>
+                Quick Links
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  width: '40px',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #4ecdc4, #44a08d)',
+                  borderRadius: '2px'
+                }}></div>
+              </h5>
+              <ul className="list-unstyled m-0">
+                {[
+                  { name: 'Home', href: '/', icon: '🏠' },
+                  { name: 'About Us', href: '/about', icon: 'ℹ️' },
+                  { name: 'Contact', href: '/contact', icon: '📞' },
+                  // { name: 'Privacy Policy', href: '/privacy', icon: '🔒' },
+                  // { name: 'Terms of Service', href: '/terms', icon: '📋' }
+                ].map((link, index) => (
+                  <li key={index} className="mb-2">
+                    <a 
+                      href={link.href} 
+                      className="text-white-50 text-decoration-none d-flex align-items-center"
+                      style={{
+                        transition: 'all 0.3s ease',
+                        padding: '8px 0',
+                        borderRadius: '8px',
+                        paddingLeft: '10px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#ffffff';
+                        e.target.style.background = 'rgba(255,255,255,0.1)';
+                        e.target.style.transform = 'translateX(5px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = 'rgba(255,255,255,0.7)';
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateX(0)';
+                      }}
+                    >
+                      <span style={{ marginRight: '12px', fontSize: '1.1rem' }}>{link.icon}</span>
+                      {link.name}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Tags Box */}
-            <div className="col-sm-6 col-lg-3 footer-box py-4">
-              <h5 className="wiget-title">Tags</h5>
-              <ul className="list-unstyled m-0 menu-services">
-                {uniqueTags.map((tag) => (
-                  <li key={tag.id}>
-                    <a href={`/tags/${tag.slug}`}>{tag.slug}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Contact & Social */}
+            <div className="col-sm-6 col-lg-3 footer-box">
+              <h5 className="text-white fw-bold mb-4" style={{ 
+                fontSize: '1.2rem',
+                position: 'relative',
+                paddingBottom: '10px'
+              }}>
+                Connect With Us
+                <div style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  width: '40px',
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #667eea, #764ba2)',
+                  borderRadius: '2px'
+                }}></div>
+              </h5>
+              
+              
+              <div className="mb-4">
+                <div className="d-flex align-items-center mb-3">
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: 'rgba(255,255,255,0.1)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '12px'
+                  }}>
+                    <i className="fas fa-envelope text-white"></i>
+                  </div>
+                  <div>
+                    <div className="text-white-50 small">Email</div>
+                    <div className="text-white">info@outlinekerala.com</div>
+                  </div>
+                </div>
+                
+                <div className="d-flex align-items-center mb-3">
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: 'rgba(255,255,255,0.1)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '12px'
+                  }}>
+                    <i className="fas fa-phone text-white"></i>
+                  </div>
+                  <div>
+                    <div className="text-white-50 small">Phone</div>
+                    <div className="text-white">+91 9999999999</div>
+                  </div>
+                </div>
+              </div>
 
-            {/* Static Links Box */}
-            <div className="col-sm-6 col-lg-3 footer-box py-4">
-              <h5 className="wiget-title">Quick Links</h5>
-              <ul className="list-unstyled m-0 menu-services">
-              <li>
-                  <a href="/">Home</a>
-                </li>
-                <li>
-                  <a href="/about">About</a>
-                </li>
-                <li>
-                  <a href="/contact">Contact</a>
-                </li>
-                <li>
-                  <a href="/privacy-policy">Privacy Policy</a>
-                </li>
-                <li>
-                  <a href="/newsletter">Newsletter</a>
-                </li>
-              </ul>
+             
+              {/* <div>
+                <div className="text-white-50 mb-3">Follow Us</div>
+                <div className="d-flex gap-2">
+                  {[
+                    { icon: 'fab fa-facebook-f', href: '#', color: '#1877f2' },
+                    { icon: 'fab fa-twitter', href: '#', color: '#1da1f2' },
+                    { icon: 'fab fa-instagram', href: '#', color: '#e4405f' },
+                    { icon: 'fab fa-youtube', href: '#', color: '#ff0000' }
+                  ].map((social, index) => (
+                    <a 
+                      key={index}
+                      href={social.href} 
+                      className="text-white text-decoration-none d-flex align-items-center justify-content-center"
+                      style={{
+                        width: '45px',
+                        height: '45px',
+                        background: 'rgba(255,255,255,0.1)',
+                        borderRadius: '50%',
+                        transition: 'all 0.3s ease',
+                        border: '1px solid rgba(255,255,255,0.2)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = social.color;
+                        e.target.style.transform = 'translateY(-3px)';
+                        e.target.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(255,255,255,0.1)';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    >
+                      <i className={social.icon} style={{ fontSize: '1.1rem' }}></i>
+                    </a>
+                  ))}
+                </div>
+              </div> */}
             </div>
           </div>
         </div>
       </footer>
-      {/* END FOOTER */}
 
-      {/* START SUB FOOTER */}
-      <div className="sub-footer">
+      {/* SUB FOOTER */}
+      <div className="sub-footer" style={{
+        background: 'linear-gradient(90deg, #0f1419 0%, #1a1f2e 100%)',
+        padding: '1.5rem 0',
+        borderTop: '1px solid rgba(255,255,255,0.1)'
+      }}>
         <div className="container">
-          <div className="row align-items-center g-1 g-sm-3">
-            <div className="col text-center text-sm-start">
-              <div className="copy">
-                © 2025 Outline-Kerala. All rights reserved.
+          <div className="row align-items-center">
+            <div className="col-md-6 text-center text-md-start">
+              <div className="text-white-50">
+                © 2025 <strong className="text-white">Outline Kerala</strong>. All rights reserved.
               </div>
             </div>
-            <div className="col-sm-auto">
-              <ul className="footer-nav list-unstyled text-center mb-0">
-                <li className="list-inline-item">
-                  <a href="/about">About</a>
-                </li>
-                <li className="list-inline-item">
-                  <a href="/contact">Contact</a>
-                </li>
+            <div className="col-md-6 text-center text-md-end">
+              <ul className="list-inline m-0">
+                {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item, index) => (
+                  <li key={index} className="list-inline-item">
+                    <a 
+                      href="#" 
+                      className="text-white-50 text-decoration-none"
+                      style={{ 
+                        fontSize: '0.9rem',
+                        transition: 'color 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => e.target.style.color = '#ffffff'}
+                      onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
+                    >
+                      {item}
+                    </a>
+                    {index < 2 && <span className="text-white-50 mx-2">•</span>}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </div>
-      {/* END SUB FOOTER */}
     </>
   );
 };
