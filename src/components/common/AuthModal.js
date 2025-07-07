@@ -33,7 +33,7 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
         },
       });
 
-      login(data.loginUser.token); // 👈 use AuthContext
+      login(data.loginUser.token, data.loginUser.user); // 👈 use AuthContext
       toast.success(`Welcome back, ${data.loginUser.user.username}!`);
       reset();
       onClose();

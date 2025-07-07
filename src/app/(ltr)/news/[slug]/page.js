@@ -26,6 +26,7 @@ const page = () => {
   const [likeNews] = useMutation(LIKE_NEWS);
   const [likeCount, setLikeCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
 
   const [visibleCount, setVisibleCount] = useState(8);
   const { slug } = useParams();
@@ -111,16 +112,15 @@ const page = () => {
   const currentCategoryIndex = allCategories.findIndex(
     (cat) => cat.name === post.categoryName
   );
-  
+
   // Wrap-around next 3 categories excluding the current one
   let secondSlideCategories = [];
-  
+
   if (currentCategoryIndex !== -1) {
     const after = allCategories.slice(currentCategoryIndex + 1);
     const before = allCategories.slice(0, currentCategoryIndex); // wrap from start
     secondSlideCategories = [...after, ...before].slice(0, 3);
   }
-  
 
   console.log("Sending comment:", {
     newsId: post?.id,
@@ -156,6 +156,7 @@ const page = () => {
       return;
     }
 
+    setLikeLoading(true);
     try {
       const { data } = await likeNews({
         variables: { newsId: Number(post.id) },
@@ -166,9 +167,14 @@ const page = () => {
       // Optimistically update UI
       setHasLiked(liked);
       setLikeCount((prev) => (liked ? prev + 1 : prev - 1));
+
+      // Optionally refetch to ensure data consistency
+      refetch();
     } catch (error) {
       console.error("Like error:", error);
       toast.error("Failed to like/unlike.");
+    } finally {
+      setLikeLoading(false);
     }
   };
 
@@ -245,9 +251,11 @@ const page = () => {
                           alignItems: "center",
                           gap: "6px",
                           cursor: isAuthenticated ? "pointer" : "not-allowed",
-                          color: hasLiked === true ? "#eb0254" : "#666", // this stays red if liked
+                          color: hasLiked ? "#eb0254" : "#666",
                           fontWeight: "500",
                           transition: "color 0.3s ease",
+                          opacity: likeLoading ? 0.6 : 1,
+                          pointerEvents: likeLoading ? "none" : "auto",
                         }}
                         onClick={handleLike}
                         title={
