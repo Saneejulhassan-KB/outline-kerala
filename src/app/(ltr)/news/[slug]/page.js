@@ -446,8 +446,20 @@ const page = () => {
                                       color: "#333",
                                     }}
                                   >
-                                    {comment.user?.username?.[0]?.toUpperCase() ||
-                                      "?"}
+                                    {(() => {
+                                      const username =
+                                        comment.user?.username || "";
+                                      const words = username.trim().split(" ");
+                                      if (words.length >= 2) {
+                                        return (
+                                          words[0][0] + words[1][0]
+                                        ).toUpperCase();
+                                      } else {
+                                        return (
+                                          username[0]?.toUpperCase() || "?"
+                                        );
+                                      }
+                                    })()}
                                   </div>
                                 </div>
                                 <div style={{ flexGrow: 1 }}>
