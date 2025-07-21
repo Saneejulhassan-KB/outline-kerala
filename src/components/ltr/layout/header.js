@@ -193,7 +193,7 @@ const Header = () => {
                       {/* End of /. header social */}
                     </li>
                     <li className="d-none d-sm-block">
-                      <Link className="nav-link" href="/contact">
+                      <Link className="nav-link" href="/">
                         Home
                       </Link>
                     </li>
