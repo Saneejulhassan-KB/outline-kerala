@@ -600,16 +600,23 @@ const Header = () => {
               </ul>
             </div>
 
-            {/* Desktop Search Button */}
-            {/* <div className="d-none d-lg-flex">
-              <button
+            {/* Desktop Search and Download Buttons */}
+            <div className="d-none d-lg-flex align-items-center gap-3">
+              {/* <button
                 type="button"
                 className="btn btn-search_two ms-auto"
                 onClick={handleSearchButtonClick}
               >
                 <i className="fa fa-search fa-lg" />
-              </button>
-            </div> */}
+              </button> */}
+              <a
+                href="https://github.com/Gopi333888/Outline-Kerala-News-App/releases/download/v1.0.0/app-release.apk"
+                download
+                className="btn btn-primary btn-sm"
+              >
+                Download Our App
+              </a>
+            </div>
           </div>
         </nav>
 
