@@ -232,7 +232,7 @@ const Header = () => {
                     </li> */}
                     <li>
                       <a
-                        href="https://github.com/Gopi333888/Outline-Kerala-News-App/releases/download/v1.0.0/app-release.apk"
+                        href="https://gopi333888.github.io/outline-kerala-news-app-apk/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fw-bold text-primary text-decoration-none"
