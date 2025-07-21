@@ -304,7 +304,6 @@ const Footer = () => {
             <div className="col-md-4 text-center">
               <div className="text-white-50" style={{ fontSize: '0.85rem' }}>
                 Design and Developed by <a href="https://rcubeventures.co.in/" target="_blank" rel="noopener noreferrer" className="text-white text-decoration-none" style={{ fontWeight: 'bold' }}>Rcube Ventures & Infrastructure Pvt Ltd</a>
-                Design and Developed by <strong className="text-white">Rcube Ventures & Infrastructure Pvt Ltd</strong>
               </div>
             </div>
 
