@@ -21,7 +21,7 @@ const Footer = () => {
       {/* START FOOTER */}
       <footer className="main-footer position-relative overflow-hidden" style={{
         background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-        padding: '4rem 0 2rem 0'
+        padding: '1.5rem 0 1rem 0'
       }}>
         {/* Background Pattern */}
         <div className="position-absolute top-0 start-0 w-100 h-100 opacity-10">
@@ -33,15 +33,14 @@ const Footer = () => {
         </div>
 
         <div className="container position-relative z-1">
-          <div className="row g-5">
+          <div className="row g-3">
             {/* Logo and Caption */}
             <div className="col-sm-6 col-lg-3 footer-box">
               <div className="text-center text-lg-start">
-                <a href="/" className="footer-logo d-inline-block mb-4">
+                <a href="/" className="footer-logo d-inline-block mb-2">
                   <div style={{
-                    
-                    borderRadius: '15px',
-                    padding: '15px',
+                    borderRadius: '10px',
+                    padding: '8px',
                     display: 'inline-block',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255,255,255,0.2)'
@@ -50,19 +49,19 @@ const Footer = () => {
                       src="/logo.jpeg"
                       alt="footer logo"
                       className="img-fluid rounded"
-                      width={80}
-                      height={80}
+                      width={50}
+                      height={50}
                       style={{ filter: 'brightness(1.1)' }}
                     />
                   </div>
                 </a>
-                <h4 className="text-white fw-bold mb-3" style={{ fontSize: '1.5rem' }}>
+                <h4 className="text-white fw-bold mb-2" style={{ fontSize: '1.2rem' }}>
                   Outline Kerala
                 </h4>
-                <p className="text-white-50 mb-3" style={{ lineHeight: '1.6' }}>
+                <p className="text-white-50 mb-2" style={{ lineHeight: '1.4', fontSize: '0.9rem' }}>
                   Your Voice, Your News
                 </p>
-                <p className="text-white-50 small" style={{ lineHeight: '1.5' }}>
+                <p className="text-white-50 small" style={{ lineHeight: '1.3', fontSize: '0.8rem' }}>
                   Delivering timely and trusted news stories from Kerala and beyond, keeping you informed with the latest updates and breaking news.
                 </p>
               </div>
@@ -70,18 +69,18 @@ const Footer = () => {
 
             {/* Categories */}
             <div className="col-sm-6 col-lg-3 footer-box">
-              <h5 className="text-white fw-bold mb-4" style={{ 
-                fontSize: '1.2rem',
+              <h5 className="text-white fw-bold mb-3" style={{ 
+                fontSize: '1rem',
                 position: 'relative',
-                paddingBottom: '10px'
+                paddingBottom: '8px'
               }}>
                 Categories
                 <div style={{
                   position: 'absolute',
                   bottom: '0',
                   left: '0',
-                  width: '40px',
-                  height: '3px',
+                  width: '30px',
+                  height: '2px',
                   background: 'linear-gradient(90deg, #ff6b6b, #ffa500)',
                   borderRadius: '2px'
                 }}></div>
@@ -89,15 +88,16 @@ const Footer = () => {
               <ul className="list-unstyled m-0">
                 {categories.length > 0 ? (
                   categories.slice(0, 6).map((category, index) => (
-                    <li key={category.id} className="mb-2">
+                    <li key={category.id} className="mb-1">
                       <a 
                         href={`/category/${category.slug}`} 
                         className="text-white-50 text-decoration-none d-flex align-items-center"
                         style={{
                           transition: 'all 0.3s ease',
-                          padding: '8px 0',
-                          borderRadius: '8px',
-                          paddingLeft: '10px'
+                          padding: '4px 0',
+                          borderRadius: '6px',
+                          paddingLeft: '8px',
+                          fontSize: '0.85rem'
                         }}
                         onMouseEnter={(e) => {
                           e.target.style.color = '#ffffff';
@@ -111,11 +111,11 @@ const Footer = () => {
                         }}
                       >
                         <span style={{ 
-                          width: '4px', 
-                          height: '4px', 
+                          width: '3px', 
+                          height: '3px', 
                           background: '#ff6b6b', 
                           borderRadius: '50%', 
-                          marginRight: '12px',
+                          marginRight: '8px',
                           display: 'inline-block'
                         }}></span>
                         {category.slug.charAt(0).toUpperCase() + category.slug.slice(1)}
@@ -123,25 +123,25 @@ const Footer = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="text-white-50">No categories found</li>
+                  <li className="text-white-50" style={{ fontSize: '0.85rem' }}>No categories found</li>
                 )}
               </ul>
             </div>
 
             {/* Quick Links */}
             <div className="col-sm-6 col-lg-3 footer-box">
-              <h5 className="text-white fw-bold mb-4" style={{ 
-                fontSize: '1.2rem',
+              <h5 className="text-white fw-bold mb-3" style={{ 
+                fontSize: '1rem',
                 position: 'relative',
-                paddingBottom: '10px'
+                paddingBottom: '8px'
               }}>
                 Quick Links
                 <div style={{
                   position: 'absolute',
                   bottom: '0',
                   left: '0',
-                  width: '40px',
-                  height: '3px',
+                  width: '30px',
+                  height: '2px',
                   background: 'linear-gradient(90deg, #4ecdc4, #44a08d)',
                   borderRadius: '2px'
                 }}></div>
@@ -154,15 +154,16 @@ const Footer = () => {
                   // { name: 'Privacy Policy', href: '/privacy', icon: '🔒' },
                   // { name: 'Terms of Service', href: '/terms', icon: '📋' }
                 ].map((link, index) => (
-                  <li key={index} className="mb-2">
+                  <li key={index} className="mb-1">
                     <a 
                       href={link.href} 
                       className="text-white-50 text-decoration-none d-flex align-items-center"
                       style={{
                         transition: 'all 0.3s ease',
-                        padding: '8px 0',
-                        borderRadius: '8px',
-                        paddingLeft: '10px'
+                        padding: '4px 0',
+                        borderRadius: '6px',
+                        paddingLeft: '8px',
+                        fontSize: '0.85rem'
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = '#ffffff';
@@ -175,7 +176,7 @@ const Footer = () => {
                         e.target.style.transform = 'translateX(0)';
                       }}
                     >
-                      <span style={{ marginRight: '12px', fontSize: '1.1rem' }}>{link.icon}</span>
+                      <span style={{ marginRight: '8px', fontSize: '1rem' }}>{link.icon}</span>
                       {link.name}
                     </a>
                   </li>
@@ -185,60 +186,60 @@ const Footer = () => {
 
             {/* Contact & Social */}
             <div className="col-sm-6 col-lg-3 footer-box">
-              <h5 className="text-white fw-bold mb-4" style={{ 
-                fontSize: '1.2rem',
+              <h5 className="text-white fw-bold mb-3" style={{ 
+                fontSize: '1rem',
                 position: 'relative',
-                paddingBottom: '10px'
+                paddingBottom: '8px'
               }}>
                 Connect With Us
                 <div style={{
                   position: 'absolute',
                   bottom: '0',
                   left: '0',
-                  width: '40px',
-                  height: '3px',
+                  width: '30px',
+                  height: '2px',
                   background: 'linear-gradient(90deg, #667eea, #764ba2)',
                   borderRadius: '2px'
                 }}></div>
               </h5>
               
               
-              <div className="mb-4">
-                <div className="d-flex align-items-center mb-3">
+              <div className="mb-3">
+                <div className="d-flex align-items-center mb-2">
                   <div style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '30px',
+                    height: '30px',
                     background: 'rgba(255,255,255,0.1)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '12px'
+                    marginRight: '8px'
                   }}>
-                    <i className="fas fa-envelope text-white"></i>
+                    <i className="fas fa-envelope text-white" style={{ fontSize: '0.8rem' }}></i>
                   </div>
                   <div>
-                    <div className="text-white-50 small">Email</div>
-                    <div className="text-white">info@outlinekerala.com</div>
+                    <div className="text-white-50 small" style={{ fontSize: '0.75rem' }}>Email</div>
+                    <div className="text-white" style={{ fontSize: '0.85rem' }}>info@outlinekerala.com</div>
                   </div>
                 </div>
                 
-                <div className="d-flex align-items-center mb-3">
+                <div className="d-flex align-items-center mb-2">
                   <div style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '30px',
+                    height: '30px',
                     background: 'rgba(255,255,255,0.1)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '12px'
+                    marginRight: '8px'
                   }}>
-                    <i className="fas fa-phone text-white"></i>
+                    <i className="fas fa-phone text-white" style={{ fontSize: '0.8rem' }}></i>
                   </div>
                   <div>
-                    <div className="text-white-50 small">Phone</div>
-                    <div className="text-white">+91 9999999999</div>
+                    <div className="text-white-50 small" style={{ fontSize: '0.75rem' }}>Phone</div>
+                    <div className="text-white" style={{ fontSize: '0.85rem' }}>+91 9999999999</div>
                   </div>
                 </div>
               </div>
@@ -289,17 +290,24 @@ const Footer = () => {
       {/* SUB FOOTER */}
       <div className="sub-footer" style={{
         background: 'linear-gradient(90deg, #0f1419 0%, #1a1f2e 100%)',
-        padding: '1.5rem 0',
+        padding: '0.75rem 0',
         borderTop: '1px solid rgba(255,255,255,0.1)'
       }}>
         <div className="container">
           <div className="row align-items-center">
-            <div className="col-md-6 text-center text-md-start">
-              <div className="text-white-50">
+            <div className="col-md-4 text-center text-md-start">
+              <div className="text-white-50" style={{ fontSize: '0.85rem' }}>
                 © 2025 <strong className="text-white">Outline Kerala</strong>. All rights reserved.
               </div>
             </div>
-            <div className="col-md-6 text-center text-md-end">
+            
+            <div className="col-md-4 text-center">
+              <div className="text-white-50" style={{ fontSize: '0.85rem' }}>
+                Design and Developed by <a href="https://rcubeventures.co.in/" target="_blank" rel="noopener noreferrer" className="text-white text-decoration-none" style={{ fontWeight: 'bold' }}>Rcube Ventures & Infrastructure Pvt Ltd</a>
+              </div>
+            </div>
+
+            <div className="col-md-4 text-center text-md-end">
               <ul className="list-inline m-0">
                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item, index) => (
                   <li key={index} className="list-inline-item">
@@ -307,7 +315,7 @@ const Footer = () => {
                       href="#" 
                       className="text-white-50 text-decoration-none"
                       style={{ 
-                        fontSize: '0.9rem',
+                        fontSize: '0.8rem',
                         transition: 'color 0.3s ease'
                       }}
                       onMouseEnter={(e) => e.target.style.color = '#ffffff'}
