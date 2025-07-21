@@ -276,7 +276,7 @@ const Footer = () => {
                         e.target.style.boxShadow = 'none';
                       }}
                     >
-                      <i className={social.icon} style={{ fontSize: '1.1rem' }}></i>
+                      <i className={social.icon} style={{ fontSize: '1.1rem' }}>kolla poli sanaam</i>
                     </a>
                   ))}
                 </div>
