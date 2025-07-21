@@ -217,19 +217,30 @@ const Header = () => {
               {/* Start header top right menu */}
               <div className="col-auto ms-auto">
                 <div className="header-right-menu">
-                  <ul className="d-flex justify-content-end">
+                  <ul className="d-flex justify-content-end align-items-center gap-3">
                     {/* <li className="d-md-block d-none">
-                      Currency:{" "}
+                      Currency: {" "}
                       <Link href="#" className="fw-bold">
                         USD
                       </Link>
                     </li>
                     <li className="d-md-block d-none">
-                      Wishlist:{" "}
+                      Wishlist: {" "}
                       <Link href="#" className="fw-bold">
                         12
                       </Link>
                     </li> */}
+                    <li>
+                      <a
+                        href="https://github.com/Gopi333888/Outline-Kerala-News-App/releases/download/v1.0.0/app-release.apk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="fw-bold text-primary text-decoration-none"
+                        style={{ letterSpacing: '0.01em' }}
+                      >
+                        Download Our App
+                      </a>
+                    </li>
                     <li>
                       {!isAuthenticated ? (
                         <>
@@ -609,13 +620,6 @@ const Header = () => {
               >
                 <i className="fa fa-search fa-lg" />
               </button> */}
-              <a
-                href="https://github.com/Gopi333888/Outline-Kerala-News-App/releases/download/v1.0.0/app-release.apk"
-                download
-                className="btn btn-primary btn-sm"
-              >
-                Download Our App
-              </a>
             </div>
           </div>
         </nav>
