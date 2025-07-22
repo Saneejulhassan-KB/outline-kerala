@@ -17,6 +17,7 @@
     "animate.css": "^4.1.1",
     "animate.css-react": "^1.1.0",
     "bootstrap": "^5.3.2",
+    "cross-fetch": "^4.1.0",
     "dayjs": "^1.11.13",
     "graphql": "^16.11.0",
     "jquery": "^3.7.1",
