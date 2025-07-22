@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import Layout from "@/components/ltr/layout/layout";
 import useSmartErrorHandler from "@/hooks/useSmartErrorHandler";
 import { GET_CATEGORIES_WITH_NEWS } from "../../../../../queries/getCategoriesWithNews";
-import { FaThumbsUp, FaThumbsDown, FaShareAlt } from "react-icons/fa";
+import { FaThumbsUp, FaThumbsDown, FaShareAlt, FaWhatsapp, FaFacebook, FaTwitter, FaLink } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -178,6 +178,25 @@ const page = () => {
     }
   };
 
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  const handleShare = (post) => {
+    const url = typeof window !== "undefined"
+      ? window.location.href
+      : `https://yourdomain.com/news/${post.slug}`;
+    const title = post.title;
+
+    if (navigator.share) {
+      navigator.share({
+        title,
+        text: title,
+        url,
+      }).catch(() => setShowShareMenu(true)); // fallback if user cancels
+    } else {
+      setShowShareMenu(true);
+    }
+  };
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -271,6 +290,95 @@ const page = () => {
                           }}
                         />
                         <span>{likeCount}</span>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          color: "#666",
+                          fontWeight: "500",
+                          transition: "color 0.3s",
+                          position: "relative"
+                        }}
+                        onClick={() => setShowShareMenu((prev) => !prev)}
+                        title="Share this article"
+                      >
+                        <FaShareAlt />
+                        <span>Share</span>
+                        {showShareMenu && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              background: "#fff",
+                              border: "1px solid #ddd",
+                              borderRadius: "8px",
+                              padding: "12px",
+                              zIndex: 1000,
+                              top: "40px",
+                              left: "0",
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                              minWidth: "180px"
+                            }}
+                            onClick={e => e.stopPropagation()} // Prevent closing when clicking inside
+                          >
+                            <div style={{marginBottom: 8, fontWeight: 500}}>Share this article:</div>
+                            <div style={{display: "flex", gap: 12, marginBottom: 8}}>
+                              <a
+                                href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + window.location.href)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Share on WhatsApp"
+                                style={{ color: "#25D366", fontSize: 24 }}
+                              >
+                                <FaWhatsapp />
+                              </a>
+                              <a
+                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Share on Facebook"
+                                style={{ color: "#1877F3", fontSize: 24 }}
+                              >
+                                <FaFacebook />
+                              </a>
+                              <a
+                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Share on Twitter"
+                                style={{ color: "#1DA1F2", fontSize: 24 }}
+                              >
+                                <FaTwitter />
+                              </a>
+                              <span
+                                title="Copy link"
+                                style={{ color: "#333", fontSize: 24, cursor: "pointer" }}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(window.location.href);
+                                  toast.success("Link copied!");
+                                  setShowShareMenu(false);
+                                }}
+                              >
+                                <FaLink />
+                              </span>
+                            </div>
+                            <button
+                              style={{
+                                display: "block",
+                                marginTop: 8,
+                                color: "#eb0254",
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                fontWeight: 500
+                              }}
+                              onClick={() => setShowShareMenu(false)}
+                            >Close</button>
+                          </div>
+                        )}
                       </div>
 
                       <div
