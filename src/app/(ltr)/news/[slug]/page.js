@@ -16,6 +16,8 @@ import { useMutation } from "@apollo/client";
 import { COMMENT_NEWS, LIKE_NEWS } from "../../../../../queries/mutations";
 import { toast } from "react-toastify";
 import TimeAgo from "@/components/TimeAgo";
+import Head from "next/head";
+
 
 const page = () => {
   const [sortOption, setSortOption] = useState("latest");
@@ -191,6 +193,24 @@ const page = () => {
   if (errorUI) return errorUI;
 
   return (
+    <>
+    {post && (
+      <Head>
+        <title>{post.title || "Outline Kerala News"}</title>
+        <meta name="description" content={post.summary || post.title || "Read latest news on Outline Kerala"} />
+        <meta property="og:title" content={post.title || "Outline Kerala News"} />
+        <meta property="og:description" content={post.summary || post.title || "Latest news from Kerala."} />
+        <meta property="og:image" content={`https://backend.outlinekerala.com/media/${post.image}`} />
+        <meta property="og:url" content={`https://yourwebsite.com/news/${slug}`} />
+        <meta property="og:type" content="article" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title || "Outline Kerala News"} />
+        <meta name="twitter:description" content={post.summary || post.title || "Latest news from Kerala."} />
+        <meta name="twitter:image" content={`https://backend.outlinekerala.com/media/${post.image}`} />
+      </Head>
+    )}
+
     <Layout>
       {/* *** START PAGE MAIN CONTENT *** */}
       <main className="page_main_wrapper">
@@ -662,6 +682,7 @@ const page = () => {
       </main>
       {/* *** END OF /. PAGE MAIN CONTENT *** */}
     </Layout>
+    </>
   );
 };
 

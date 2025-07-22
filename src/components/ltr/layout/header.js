@@ -45,8 +45,8 @@ const Header = () => {
   const { loading, error, data, refetch } = useQuery(GET_CATEGORIES_WITH_NEWS);
   const errorUI = useSmartErrorHandler(error, refetch);
 
-  const mainCategories = data?.categories?.slice(0, 11) || [];
-  const otherCategories = data?.categories?.slice(6) || [];
+  const mainCategories = data?.categories?.slice(0, 7) || [];
+  const otherCategories = data?.categories?.slice(10) || [];
 
   const toggleSidebar = () => {
     setSidebarActive(!isSidebarActive);
@@ -583,7 +583,7 @@ const Header = () => {
                   })}
 
                 {/* Other Categories */}
-                {/* {otherCategories.length > 0 && (
+                {otherCategories.length > 0 && (
                   <li className="nav-item dropdown">
                     <a
                       className="nav-link dropdown-toggle"
@@ -607,7 +607,7 @@ const Header = () => {
                       ))}
                     </ul>
                   </li>
-                )} */}
+                )}
               </ul>
             </div>
 
