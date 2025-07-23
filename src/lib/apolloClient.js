@@ -10,7 +10,7 @@ const httpLink = createHttpLink({
 // Auth middleware
 const authLink = setContext((_, { headers }) => {
   const token =
-    typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   return {
     headers: {
       ...headers,

@@ -7,22 +7,22 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const userData = sessionStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
     setIsAuthenticated(!!token);
     setUser(userData ? JSON.parse(userData) : null);
   }, []);
 
   const login = (token, user) => {
-    sessionStorage.setItem("token", token);
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     setIsAuthenticated(true);
     setUser(user);
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
   };
 
