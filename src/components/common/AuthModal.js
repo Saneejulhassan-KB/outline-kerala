@@ -6,10 +6,14 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { LOGIN_USER, REGISTER_USER } from "../../../queries/mutations";
 import { useAuth } from "@/context/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const router = useRouter();
+
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   const {
     register,
@@ -79,6 +83,8 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
                   onClick={() => {
                     setActiveTab("login");
                     reset();
+                    setShowLoginPassword(false);
+                    setShowSignupPassword(false);
                   }}
                 >
                   Login
@@ -92,6 +98,8 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
                   onClick={() => {
                     setActiveTab("signup");
                     reset();
+                    setShowLoginPassword(false);
+                    setShowSignupPassword(false);
                   }}
                 >
                   Sign Up
@@ -102,7 +110,12 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
               type="button"
               className="btn-close"
               aria-label="Close"
-              onClick={onClose}
+              onClick={() => {
+                reset();
+                setShowLoginPassword(false);
+                setShowSignupPassword(false);
+                onClose();
+              }}
             ></button>
           </div>
 
@@ -129,13 +142,23 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
 
                 <div className="mb-3">
                   <label className="form-label">Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    {...register("password", {
-                      required: "Password is required",
-                    })}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showLoginPassword ? "text" : "password"}
+                      className="form-control pe-5"
+                      {...register("password", {
+                        required: "Password is required",
+                      })}
+                    />
+                    <span
+                      className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowLoginPassword((prev) => !prev)}
+                    >
+                      {showLoginPassword ? <FaEye /> : <FaEyeSlash />}
+                    </span>
+                  </div>
+
                   {errors.password && (
                     <small className="text-danger">
                       {errors.password.message}
@@ -193,14 +216,24 @@ const AuthModal = ({ show, onClose, defaultTab = "login" }) => {
 
                 <div className="mb-3">
                   <label className="form-label">Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    {...register("password", {
-                      required: "Password is required",
-                      minLength: { value: 6, message: "Min 6 characters" },
-                    })}
-                  />
+                  <div className="position-relative">
+                    <input
+                      type={showSignupPassword ? "text" : "password"}
+                      className="form-control pe-5"
+                      {...register("password", {
+                        required: "Password is required",
+                        minLength: { value: 6, message: "Min 6 characters" },
+                      })}
+                    />
+                    <span
+                      className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowSignupPassword((prev) => !prev)}
+                    >
+                      {showSignupPassword ? <FaEye /> : <FaEyeSlash />}
+                    </span>
+                  </div>
+
                   {errors.password && (
                     <small className="text-danger">
                       {errors.password.message}
