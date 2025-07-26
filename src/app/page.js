@@ -27,6 +27,14 @@ export default function Home() {
   const [showAll, setShowAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [shareUrl, setShareUrl] = useState("");
+  const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    setShareUrl(window.location.href); // Get current page URL
+    setTitle(document.title); // Get current page title
+  }, []);
+
   useEffect(() => {
     // Your logic for setting dir attribute using JavaScript
     // For example:
@@ -160,7 +168,7 @@ export default function Home() {
       <main className="page_main_wrapper">
         {/* START NEWSTRICKER */}
         <NewsTicker trendingNews={trendingNews} />
-        <GoldTicker />
+        {/* <GoldTicker /> */}
         {/*  END OF /. NEWSTRICKER */}
         {/* START FEATURE SECTION */}
         <div
@@ -1069,54 +1077,52 @@ export default function Home() {
 
                         {/* Social Icons */}
                         <div className="col-md-4 d-md-block d-none thm-padding">
-                          <div className="social">
-                            <ul>
-                              <li>
-                                <div className="share transition">
-                                  <a
-                                    href="#"
-                                    target="_blank"
-                                    className="ico fb"
-                                  >
-                                    <i className="fab fa-facebook-f" />
-                                  </a>
-                                  <a
-                                    href="#"
-                                    target="_blank"
-                                    className="ico tw"
-                                  >
-                                    <i className="fab fa-twitter" />
-                                  </a>
-                                  <a
-                                    href="#"
-                                    target="_blank"
-                                    className="ico rs"
-                                  >
-                                    <i className="fas fa-rss" />
-                                  </a>
-                                  <a
-                                    href="#"
-                                    target="_blank"
-                                    className="ico pin"
-                                  >
-                                    <i className="fab fa-pinterest-p" />
-                                  </a>
-                                  <i className="ti ti-share ico-share" />
-                                </div>
-                              </li>
-                              <li>
-                                <a href="#">
-                                  <i className="ti ti-heart" />
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#">
-                                  <i className="ti ti-twitter" />
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
+      <div className="social">
+        <ul>
+          <li>
+            <div className="share transition">
+              {/* Facebook */}
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  shareUrl
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ico fb"
+              >
+                <i className="fab fa-facebook-f" />
+              </a>
+
+              {/* Twitter */}
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                  shareUrl
+                )}&text=${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ico tw"
+              >
+                <i className="fab fa-twitter" />
+              </a>
+
+              {/* WhatsApp */}
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                  `${title} - ${shareUrl}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ico ws"
+              >
+                <i className="fab fa-whatsapp" />
+              </a>
+
+              <i className="ti ti-share ico-share" />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
                       </div>
                     </div>
 

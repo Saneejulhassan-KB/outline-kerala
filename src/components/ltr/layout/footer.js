@@ -239,7 +239,7 @@ const Footer = () => {
                   </div>
                   <div>
                     <div className="text-white-50 small" style={{ fontSize: '0.75rem' }}>Phone</div>
-                    <div className="text-white" style={{ fontSize: '0.85rem' }}>+91 9999999999</div>
+                    <div className="text-white" style={{ fontSize: '0.85rem' }}>+91 7594000323</div>
                   </div>
                 </div>
               </div>
