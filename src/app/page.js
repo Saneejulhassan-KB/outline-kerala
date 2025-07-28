@@ -322,7 +322,7 @@ export default function Home() {
                     <div className="slider-post post-height-2">
                       <Link href="/" className="news-image">
                         <img
-                          src="./kerala-boat-travel.avif"
+                          src="./kerala-boat-travel.avif
                           alt=""
                           className="img-fluid"
                         />
