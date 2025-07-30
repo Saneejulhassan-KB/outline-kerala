@@ -351,7 +351,7 @@ const Header = () => {
                   <div className="fs-5 fw-semibold weather-text">
                     <WiDayLightning size={28} />{" "}
                     {temperature !== null
-                      ? `${temperature}°C - ${condition} (${location})`
+                      ? `${temperature}°C `
                       : "Loading..."}
                   </div>
                 </div>
