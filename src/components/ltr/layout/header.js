@@ -48,6 +48,46 @@ const Header = () => {
   const mainCategories = data?.categories?.slice(0, 7) || [];
   const otherCategories = data?.categories?.slice(10) || [];
 
+  const [temperature, setTemperature] = useState(null);
+  const [condition, setCondition] = useState("");
+  const [location, setLocation] = useState("");
+  const API_KEY = "06ff231fa72d44d5b40105449252807";
+
+  // Function to fetch weather by city or coords
+  async function fetchWeather(query) {
+    try {
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${query}&aqi=no`
+      );
+      const data = await response.json();
+      setTemperature(data.current.temp_c);
+      setCondition(data.current.condition.text);
+      setLocation(data.location.name);
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchWeather(`${lat},${lon}`);
+        },
+        (error) => {
+          console.warn("Geolocation error:", error.message);
+          // Fallback to default city
+          fetchWeather("Kochi");
+        }
+      );
+    } else {
+      console.warn("Geolocation not supported, using fallback city");
+      fetchWeather("Kochi");
+    }
+  }, []);
+
   const toggleSidebar = () => {
     setSidebarActive(!isSidebarActive);
     setOverlayActive(!isOverlayActive);
@@ -236,7 +276,7 @@ const Header = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="fw-bold text-primary text-decoration-none"
-                        style={{ letterSpacing: '0.01em' }}
+                        style={{ letterSpacing: "0.01em" }}
                       >
                         Download Our App
                       </a>
@@ -309,7 +349,10 @@ const Header = () => {
                     />
                   </Link>
                   <div className="fs-5 fw-semibold weather-text">
-                    <WiDayLightning size={28} /> 11.23°C
+                    <WiDayLightning size={28} />{" "}
+                    {temperature !== null
+                      ? `${temperature}°C - ${condition} (${location})`
+                      : "Loading..."}
                   </div>
                 </div>
               </div>
