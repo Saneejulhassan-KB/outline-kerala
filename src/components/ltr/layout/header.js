@@ -50,25 +50,42 @@ const Header = () => {
 
   const [temperature, setTemperature] = useState(null);
   const [condition, setCondition] = useState("");
-  const [icon, setIcon] = useState("");
   const [location, setLocation] = useState("");
-  const API_URL =
-    "https://api.weatherapi.com/v1/current.json?key=06ff231fa72d44d5b40105449252807&q=kerala&aqi=no";
+  const API_KEY = "06ff231fa72d44d5b40105449252807";
+
+  // Function to fetch weather by city or coords
+  async function fetchWeather(query) {
+    try {
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${query}&aqi=no`
+      );
+      const data = await response.json();
+      setTemperature(data.current.temp_c);
+      setCondition(data.current.condition.text);
+      setLocation(data.location.name);
+    } catch (error) {
+      console.error("Error fetching weather:", error);
+    }
+  }
 
   useEffect(() => {
-    async function fetchWeather() {
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        setTemperature(data.current.temp_c);
-        setCondition(data.current.condition.text);
-        setIcon(data.current.condition.icon);
-        setLocation(data.location.name);
-      } catch (error) {
-        console.error("Error fetching weather:", error);
-      }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchWeather(`${lat},${lon}`);
+        },
+        (error) => {
+          console.warn("Geolocation error:", error.message);
+          // Fallback to default city
+          fetchWeather("Kochi");
+        }
+      );
+    } else {
+      console.warn("Geolocation not supported, using fallback city");
+      fetchWeather("Kochi");
     }
-    fetchWeather();
   }, []);
 
   const toggleSidebar = () => {
@@ -331,22 +348,11 @@ const Header = () => {
                       alt="Logo White"
                     />
                   </Link>
-                  <div
-                    className="fs-5 fw-semibold weather-text"
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    {icon && (
-                      <img
-                        src={icon}
-                        alt={condition}
-                        style={{ width: "28px", height: "28px" }}
-                      />
-                    )}
-                    {temperature !== null ? `${temperature}°C  ` : "Loading..."}
+                  <div className="fs-5 fw-semibold weather-text">
+                    <WiDayLightning size={28} />{" "}
+                    {temperature !== null
+                      ? `${temperature}°C - ${condition} (${location})`
+                      : "Loading..."}
                   </div>
                 </div>
               </div>
