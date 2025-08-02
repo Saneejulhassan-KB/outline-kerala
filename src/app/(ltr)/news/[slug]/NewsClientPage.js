@@ -256,7 +256,7 @@ const page = () => {
               <StickyBox>
                 <div className="post_details_inner">
                   <div className="post_details_block">
-                    <h2>{post.title}</h2>
+                    <h3 style={{fontWeight:'bold'}}>{post.title}</h3>
                     <img
                       src={`https://backend.outlinekerala.com/media/${post.image}`}
                       className="img-fluid"
