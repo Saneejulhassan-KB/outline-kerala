@@ -29,6 +29,7 @@ const HomeLinks = [
   { href: "/post-template-three", text: "Post - layout 3" },
   { href: "/", text: "Home" },
   { href: "/about", text: "About Us" },
+  { href: "/privacy", text: "Privacy Policy" },
   // { href: '/typography', text: 'Typography' },
   { href: "/contact", text: "Contact" },
   { href: "/faq", text: "Faq" },
@@ -245,6 +246,11 @@ const Header = () => {
                     <li className="d-none d-sm-block">
                       <Link className="nav-link" href="/about">
                         About Us
+                      </Link>
+                    </li>
+                    <li className="d-none d-sm-block">
+                      <Link className="nav-link" href="/privacy">
+                        Privacy Policy
                       </Link>
                     </li>
                     {/* <li className="d-none d-sm-block">

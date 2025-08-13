@@ -407,7 +407,7 @@ const Footer = () => {
                   (item, index) => (
                     <li key={index} className="list-inline-item">
                       <a
-                        href="#"
+                        href="/privacy"
                         className="text-white-50 text-decoration-none"
                         style={{
                           fontSize: "0.8rem",
