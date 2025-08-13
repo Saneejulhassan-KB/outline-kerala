@@ -61,8 +61,8 @@ const page = () => {
                   directors or other managing authority.
                 </li>
                 <li>
-                  <strong>Website</strong> refers to Outline Kerala, the
-                  website provided by the Company.
+                  <strong>Website</strong> refers to Outline Kerala, the website
+                  provided by the Company.
                 </li>
                 <li>
                   <strong>Company</strong> (referred to as either "the Company",
@@ -161,28 +161,26 @@ const page = () => {
 
               <ul>
                 <li>
-                  <strong>To provide and maintain our Service:</strong>{" "}
-                  including to monitor the usage of our Service.
+                  <strong>To provide and maintain our Website:</strong>{" "}
+                  Including monitoring the usage of our Website.
                 </li>
                 <li>
-                  <strong>To manage Your Account:</strong> to manage Your
-                  registration as a user of the Service. The Personal Data You
-                  provide can give You access to different functionalities of
-                  the Service that are available to You as a registered user.
+                  <strong>To manage Your Account:</strong> To manage your
+                  registration as a user of the Website. The personal data you
+                  provide can give you access to different functionalities of
+                  the Website available to you as a registered user.
                 </li>
                 <li>
-                  <strong>For the performance of a contract:</strong> the
-                  development, compliance and undertaking of the purchase
-                  contract for the products, items or services You have
-                  purchased or of any other contract with Us through the
-                  Service.
+                  <strong>For the performance of a contract:</strong> For the
+                  development, compliance, and execution of the purchase
+                  contract for products, items, or services you have purchased,
+                  or any other contract with us through the Website.
                 </li>
                 <li>
-                  <strong>To contact You:</strong> to contact You by email,
+                  <strong>To contact You:</strong> To contact you by email,
                   telephone calls, SMS, or other equivalent forms of electronic
-                  communication, such as a mobile application's push
-                  notifications regarding updates or informative communications
-                  related to the functionalities, products or contracted
+                  communication regarding updates or informative communications
+                  related to the functionalities, products, or contracted
                   services, including security updates, when necessary or
                   reasonable for their implementation.
                 </li>
@@ -191,29 +189,32 @@ const page = () => {
                     To provide You with news, special offers and general
                     information:
                   </strong>{" "}
-                  about other goods, services and events which we offer that are
-                  similar to those that you have already purchased or enquired
-                  about unless You have opted not to receive such information.
+                  To provide you with news, special offers, and general
+                  information about goods, services, and events that we offer,
+                  which are similar to those you have already purchased or
+                  enquired about, unless you have opted not to receive such
+                  information.
                 </li>
                 <li>
                   <strong>To manage Your requests:</strong> to attend and manage
                   Your requests to Us.
                 </li>
                 <li>
-                  <strong>For business transfers:</strong> we may use Your
+                  <strong>For business transfers:</strong> We may use your
                   information to evaluate or conduct a merger, divestiture,
                   restructuring, reorganization, dissolution, or other sale or
-                  transfer of some or all of Our assets, whether as a going
+                  transfer of some or all of our assets, whether as a going
                   concern or as part of bankruptcy, liquidation, or similar
-                  proceeding, in which Personal Data held by Us about our
-                  Service users is among the assets transferred.
+                  proceedings, in which personal data held by us about our
+                  Website users is among the assets transferred.
                 </li>
                 <li>
-                  <strong>For other purposes:</strong> we may use Your
+                  <strong>For other purposes:</strong> We may use your
                   information for other purposes, such as data analysis,
-                  identifying usage trends, determining the effectiveness of our
-                  promotional campaigns and to evaluate and improve our Service,
-                  products, services, marketing and your experience.
+                  identifying usage trends, determining the effectiveness of
+                  promotional campaigns, and evaluating and improving our
+                  Website, products, services, marketing, and your overall
+                  experience.
                 </li>
               </ul>
 
@@ -224,39 +225,36 @@ const page = () => {
 
               <ul>
                 <li>
-                  <strong>With Service Providers:</strong> we may share Your
-                  personal information with Service Providers to monitor and
-                  analyze the use of our Service, and to contact You.
+                  <strong>With Service Providers:</strong> To monitor and
+                  analyze the use of our Website, and to contact you.
                 </li>
                 <li>
-                  <strong>For business transfers:</strong> we may share or
-                  transfer Your personal information in connection with, or
-                  during negotiations of, any merger, sale of Company assets,
-                  financing, or acquisition of all or a portion of Our business
+                  <strong>For business transfers:</strong>In connection with, or
+                  during negotiations of, any merger, sale of company assets,
+                  financing, or acquisition of all or a portion of our business
                   to another company.
                 </li>
                 <li>
-                  <strong>With Affiliates:</strong> we may share Your
-                  information with Our affiliates, in which case we will require
+                  <strong>With Affiliates:</strong> We may share your
+                  information with our affiliates, in which case we will require
                   those affiliates to honor this Privacy Policy. Affiliates
-                  include Our parent company and any other subsidiaries, joint
-                  venture partners or other companies that We control or that
-                  are under common control with Us.
+                  include our parent company and any other subsidiaries, joint
+                  venture partners, or other companies that we control or are
+                  under common control with us.
                 </li>
                 <li>
-                  <strong>With business partners:</strong> we may share Your
-                  information with Our business partners to offer You certain
+                  <strong>With business partners:</strong> To offer you certain
                   products, services, or promotions.
                 </li>
                 <li>
-                  <strong>With other users:</strong> when You share personal
-                  information or otherwise interact in the public areas with
-                  other users, such information may be viewed by all users and
-                  may be publicly distributed outside.
+                  <strong>With other users:</strong> When you share personal
+                  information or otherwise interact in public areas of the
+                  Website, such information may be viewed by all users and may
+                  be publicly distributed outside.
                 </li>
                 <li>
-                  <strong>With Your consent:</strong> we may disclose Your
-                  personal information for any other purpose with Your consent.
+                  <strong>With Your consent:</strong> We may disclose your
+                  personal information for any other purpose with your consent.
                 </li>
               </ul>
             </div>
