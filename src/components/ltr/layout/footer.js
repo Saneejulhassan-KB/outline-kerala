@@ -272,7 +272,7 @@ const Footer = () => {
                       Email
                     </div>
                     <div className="text-white" style={{ fontSize: "0.85rem" }}>
-                      info@outlinekerala.com
+                    outlinekerala@gmail.com
                     </div>
                   </div>
                 </div>
