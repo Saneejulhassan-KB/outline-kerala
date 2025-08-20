@@ -163,28 +163,38 @@ const page = () => {
       toast.warning("Please login to like the post.");
       return;
     }
-
+  
     setLikeLoading(true);
+  
     try {
       const { data } = await likeNews({
         variables: { newsId: Number(post.id) },
       });
-
+  
       const liked = data?.likeNews?.liked;
-
-      // Optimistically update UI
-      setHasLiked(liked);
-      setLikeCount((prev) => (liked ? prev + 1 : prev - 1));
-
-      // Optionally refetch to ensure data consistency
-      refetch();
+  
+      if (typeof liked === "boolean") {
+        setHasLiked(liked);
+  
+        setLikeCount((prev) => {
+          if (liked && !hasLiked) {
+            // User just liked → increase count
+            return prev + 1;
+          } else if (!liked && hasLiked) {
+            // User just unliked → decrease count
+            return Math.max(prev - 1, 0); // prevent negative
+          }
+          return prev; // no change
+        });
+      }
     } catch (error) {
       console.error("Like error:", error);
-      toast.error("Failed to like/unlike.");
+      toast.error("Failed to like/unlike. Try again.");
     } finally {
       setLikeLoading(false);
     }
   };
+  
 
   const [showShareMenu, setShowShareMenu] = useState(false);
 
